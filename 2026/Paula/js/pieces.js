@@ -1,7 +1,7 @@
 // Little Toronto: every model is split into puzzle pieces like a laser-cut wooden kit.
 // Each piece lists the pieces it snaps onto (needs). Order below is the build order.
 import * as THREE from 'three';
-import { shape, roundRect, leafPts, cloudPts, blob, grow, edgeWindows } from './builder.js?v=20261114171333';
+import { shape, roundRect, leafPts, cloudPts, blob, grow, edgeWindows } from './builder.js?v=20261114171744';
 
 const PI = Math.PI;
 export const K = {
@@ -270,11 +270,11 @@ def('fl5', 'Turret & flag', ['fl4'], b => {
   }
   b.cyl(tx, 4.9, tz, 0.4, 0.08, K.copperDark, { seg: 12 });
   b.cyl(tx, 4.98, tz, 0.38, 0.55, K.copper2, { rt: 0.02, seg: 12 });
-  b.cyl(tx, 5.5, tz, 0.018, 0.68, K.black, { seg: 5 });
-  b.box(tx + 0.06, 5.95, tz, 0.08, 0.2, 0.015, K.signRed);
-  b.box(tx + 0.18, 5.95, tz, 0.16, 0.2, 0.015, K.white);
-  b.box(tx + 0.30, 5.95, tz, 0.08, 0.2, 0.015, K.signRed);
-  b.box(tx + 0.18, 6.01, tz, 0.07, 0.08, 0.02, K.signRed);
+  b.cyl(tx, 5.5, tz, 0.022, 1.0, K.black, { seg: 5 });
+  b.box(tx + 0.09, 6.15, tz, 0.14, 0.3, 0.015, K.signRed);
+  b.box(tx + 0.3, 6.15, tz, 0.28, 0.3, 0.015, K.white);
+  b.box(tx + 0.51, 6.15, tz, 0.14, 0.3, 0.015, K.signRed);
+  b.plate(shape(leafPts(0.11)), 0.025, tx + 0.3, 6.3, tz, K.signRed);
 });
 def('mural', 'Flatiron mural', ['fl3'], b => {
   b.add(new THREE.PlaneGeometry(4.0, 2.82), '#fff', { ch: 'mural', uv: true, x: 4.6, y: 2.45, z: -3.765, ry: PI });
@@ -421,7 +421,7 @@ def('leaves', 'Fallen leaves & pumpkins', ['plaza', 'h2roof'], b => {
 });
 const TAN = '#c8833f', TAN2 = '#9a5a2a', WH = '#f7f1e6', BLK = '#2b2522';
 def('beagle', 'Beagle', ['sign'], b => {
-  const x = 1.75, z = 4.3, y = 0.05;
+  const x = 2.15, z = 4.3, y = 0.05;
   for (const lx of [-0.15, 0.15]) for (const lz of [-0.065, 0.065]) b.box(x + lx, y, z + lz, 0.07, 0.17, 0.07, WH);
   b.box(x, y + 0.15, z, 0.46, 0.19, 0.2, TAN);
   b.box(x - 0.04, y + 0.27, z, 0.3, 0.08, 0.205, BLK);
@@ -469,6 +469,93 @@ def('bench', 'Bench & Bike Share', ['plaza'], b => {
   b.box(kx + 0.21, ky + 0.56, kz, 0.04, 0.04, 0.3, K.black);
   b.box(kx + 0.36, ky + 0.38, kz, 0.14, 0.12, 0.16, K.bikeGreen);
 });
+// ---------- Paula's family ----------
+function person(b, x, z, o) {
+  const y = 0.05, legH = o.legH, torH = o.torH, hw = o.wide ?? 0.24;
+  for (const s of [-1, 1]) {
+    b.box(x + s * 0.055, y, z + 0.01, 0.085, 0.05, 0.12, '#3a2f2a');
+    b.box(x + s * 0.055, y + 0.04, z, 0.08, legH - 0.04, 0.09, o.bottom);
+  }
+  const ty = y + legH;
+  b.box(x, ty, z, hw, torH, 0.16, o.top);
+  const hy = ty + torH;
+  b.box(x, hy, z, 0.07, 0.04, 0.07, o.skin);
+  const hs = 0.19, headY = hy + 0.035;
+  b.box(x, headY, z, hs, hs, hs * 0.95, o.skin);
+  for (const s of [-1, 1]) b.box(x + s * 0.045, headY + hs * 0.52, z + hs * 0.48, 0.03, 0.035, 0.01, '#2b2522');
+  b.box(x, headY + hs * 0.25, z + hs * 0.48, 0.05, 0.015, 0.01, '#c0584a');
+  b.box(x, headY + hs - 0.01, z - 0.005, hs + 0.02, 0.06, hs * 0.95 + 0.02, o.hair);
+  b.box(x, headY + hs * 0.35, z - hs * 0.47, hs + 0.02, hs * 0.62, 0.04, o.hair);
+  if (o.highlight) for (const hx of [-0.06, 0.02, 0.07]) b.box(x + hx, headY + hs - 0.012, z + 0.02, 0.025, 0.064, hs * 0.8, o.highlight);
+  if (o.longHair) {
+    b.box(x, ty + torH * 0.45, z - 0.1, hs + 0.04, hs * 0.9, 0.05, o.hair);
+    if (o.highlight) for (const hx of [-0.05, 0.05]) b.box(x + hx, ty + torH * 0.5, z - 0.128, 0.03, hs * 0.8, 0.006, o.highlight);
+    for (const s of [-1, 1]) b.box(x + s * (hs / 2 + 0.005), headY - 0.02, z - 0.01, 0.03, hs * 0.85, 0.12, o.hair);
+  }
+  if (o.baby) {
+    for (const s of [-1, 1]) b.boxC(x + s * 0.1, ty + torH * 0.55, z + 0.08, 0.06, 0.2, 0.06, o.top, { rx: -1.1 });
+    b.box(x, ty + torH * 0.3, z + 0.14, 0.18, 0.11, 0.12, '#ffc2d6');
+    b.box(x + 0.05, ty + torH * 0.3 + 0.07, z + 0.15, 0.08, 0.075, 0.08, o.babySkin);
+    b.box(x + 0.05, ty + torH * 0.3 + 0.13, z + 0.15, 0.085, 0.025, 0.085, '#ff8fb3');
+  } else {
+    for (const s of [-1, 1]) {
+      b.box(x + s * (hw / 2 + 0.035), ty + 0.05, z, 0.06, torH - 0.04, 0.07, o.top);
+      b.box(x + s * (hw / 2 + 0.035), ty, z, 0.055, 0.05, 0.06, o.skin);
+    }
+  }
+}
+def('salva', 'Salva', ['sign'], b => person(b, 1.0, 4.3, {
+  legH: 0.33, torH: 0.3, wide: 0.26, skin: '#f2d2b6', hair: '#a87a4f', top: '#4f7a5a', bottom: '#3d4a63',
+}));
+def('paula', 'Paula & Olivia', ['sign'], b => person(b, 1.5, 4.3, {
+  legH: 0.26, torH: 0.26, skin: '#c98f62', hair: '#6a4328', highlight: '#c4935e', top: '#c94a3a', bottom: '#2f3550',
+  longHair: true, baby: true, babySkin: '#e6bf9c',
+}));
+
+// ---------- Costa Rica ----------
+def('crflag', 'Costa Rica flag', ['fl5'], b => {
+  const px = 4.95, pz = -2.45, top = 6.45, w = 0.5;
+  b.cyl(px, 4.88, pz, 0.06, 0.06, K.copperDark, { seg: 8 });
+  b.cyl(px, 4.9, pz, 0.022, 1.58, K.black, { seg: 5 });
+  [['#1f3f8f', 1], ['#ffffff', 1], ['#d22630', 2], ['#ffffff', 1], ['#1f3f8f', 1]].reduce((y, [c, h]) => {
+    const hh = h * 0.05; b.box(px + 0.02 + w / 2, y - hh, pz, w, hh, 0.015, c); return y - hh;
+  }, top);
+});
+def('toucan', 'Toucan', ['bench'], b => {
+  const x = 4.2, y = 0.6, z = 4.87;
+  b.box(x, y, z, 0.1, 0.14, 0.09, '#1c1c1f');
+  b.box(x + 0.035, y + 0.06, z, 0.04, 0.07, 0.085, '#ffd23f');
+  b.box(x, y + 0.14, z, 0.09, 0.08, 0.08, '#1c1c1f');
+  b.box(x + 0.1, y + 0.16, z, 0.12, 0.05, 0.05, '#f28a1e');
+  b.box(x + 0.15, y + 0.155, z, 0.03, 0.035, 0.045, '#1c1c1f');
+  b.box(x + 0.03, y + 0.19, z + 0.035, 0.03, 0.03, 0.02, '#3fb6e8');
+  b.box(x - 0.08, y + 0.02, z, 0.08, 0.04, 0.06, '#1c1c1f', { rz: 0.4 });
+});
+
+// ---------- West Toronto: Jane station, High Park capybara ----------
+def('subway', 'Jane station sign', ['sidewalkN'], b => {
+  const x = -5.4, z = -1.15;
+  b.box(x, 0.1, z, 0.16, 0.06, 0.16, K.pole);
+  b.cyl(x, 0.1, z, 0.035, 1.5, '#aab2ba', { seg: 6 });
+  b.box(x, 1.55, z, 0.62, 0.32, 0.06, '#1b1b1f');
+  b.add(new THREE.PlaneGeometry(0.58, 0.28), '#fff', { ch: 'subway', uv: true, x, y: 1.71, z: z + 0.032 });
+  b.add(new THREE.PlaneGeometry(0.58, 0.28), '#fff', { ch: 'subway', uv: true, x, y: 1.71, z: z - 0.032, ry: PI });
+  b.glow(x, 1.71, z + 0.2, 1.2, '#ffffff');
+});
+def('capybara', 'High Park capybara', ['trees2'], b => {
+  const x = 6.55, z = 4.2, y = 0, C = '#9a6a43', D = '#6e4a2e';
+  for (const lx of [-0.1, 0.1]) for (const lz of [-0.05, 0.05]) b.box(x + lx, y, z + lz, 0.06, 0.08, 0.06, D);
+  b.box(x, y + 0.07, z, 0.34, 0.18, 0.17, C);
+  b.box(x + 0.21, y + 0.12, z, 0.14, 0.13, 0.13, C);
+  b.box(x + 0.285, y + 0.13, z, 0.04, 0.08, 0.1, D);
+  for (const s of [-1, 1]) {
+    b.box(x + 0.17, y + 0.25, z + s * 0.045, 0.03, 0.035, 0.03, D);
+    b.box(x + 0.25, y + 0.2, z + s * 0.066, 0.02, 0.02, 0.01, '#1c1c1f');
+  }
+  b.cyl(x + 0.04, y + 0.25, z, 0.045, 0.07, '#f28a1e', { seg: 8 });
+  b.box(x + 0.04, y + 0.32, z, 0.02, 0.02, 0.04, '#3aa564');
+});
+
 def('boat', 'Sailboat', ['lake'], b => {
   const bx = 1.6, bz = -4.88, by = 0.07;
   b.plate(shape([[-0.58, 0.17], [0.66, 0.17], [0.46, 0], [-0.44, 0]]), 0.34, bx, by, bz, K.white);

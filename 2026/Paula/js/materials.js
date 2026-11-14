@@ -1,6 +1,6 @@
 // Shared materials + procedural canvas textures (wood grain, brick, signs, mural).
 import * as THREE from 'three';
-import { leafPts } from './builder.js?v=20261114171333';
+import { leafPts } from './builder.js?v=20261114171744';
 
 let seed = 7;
 const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
@@ -115,6 +115,16 @@ export function makeMaterials(renderer, imgs = {}) {
     }
   });
 
+  const subway = canvasTex(512, 248, (g, w, h) => {
+    g.fillStyle = '#1b1b1f'; g.fillRect(0, 0, w, h);
+    g.fillStyle = '#da251d'; g.fillRect(0, 0, w, 64);
+    g.fillStyle = '#fff'; g.font = '900 46px Nunito, Arial, sans-serif'; g.textAlign = 'left'; g.textBaseline = 'middle';
+    g.fillText('TTC', 22, 34);
+    g.fillStyle = '#00923f'; g.beginPath(); g.arc(70, 160, 46, 0, Math.PI * 2); g.fill();
+    g.fillStyle = '#fff'; g.font = '900 60px Nunito, Arial, sans-serif'; g.textAlign = 'center'; g.fillText('2', 70, 164);
+    g.textAlign = 'left'; g.font = '900 96px Nunito, Arial, sans-serif'; g.fillText('Jane', 140, 164);
+  });
+
   const lam = o => new THREE.MeshLambertMaterial({ flatShading: true, ...o });
   return {
     body: lam({ vertexColors: true, map: grain }),
@@ -130,6 +140,7 @@ export function makeMaterials(renderer, imgs = {}) {
     tramsign: lam({ map: tram, emissive: 0xffffff, emissiveMap: tram, emissiveIntensity: 0.3 }),
     marquee: lam({ map: marquee, emissive: 0xffffff, emissiveMap: marquee, emissiveIntensity: 0.12 }),
     mural: lam({ map: mural }),
+    subway: lam({ map: subway, emissive: 0xffffff, emissiveMap: subway, emissiveIntensity: 0.15 }),
     billboard: lam({ map: bill, emissive: 0xffffff, emissiveMap: bill, emissiveIntensity: 0.08 }),
   };
 }

@@ -1,10 +1,10 @@
 // Little Toronto: the game. Scene, camera, puzzle tray, tutorial, hints and the birthday finale.
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { Builder } from './builder.js?v=20261114171333';
-import { PIECES, CHAPTERS, LAST_ID, TRAM_IDS } from './pieces.js?v=20261114171333';
-import { makeMaterials, glowTexture } from './materials.js?v=20261114171333';
-import { Sound } from './sound.js?v=20261114171333';
+import { Builder } from './builder.js?v=20261114171744';
+import { PIECES, CHAPTERS, LAST_ID, TRAM_IDS } from './pieces.js?v=20261114171744';
+import { makeMaterials, glowTexture } from './materials.js?v=20261114171744';
+import { Sound } from './sound.js?v=20261114171744';
 
 const $ = s => document.querySelector(s);
 const V3 = THREE.Vector3;
@@ -69,7 +69,7 @@ export async function startApp() {
   table.position.y = -0.76; table.receiveShadow = true; scene.add(table);
 
   // ---------- pieces ----------
-  const dagaImg = await new Promise(r => { const i = new Image(); i.onload = () => r(i); i.onerror = () => r(null); i.src = 'assets/daga.png?v=20261114171333'; });
+  const dagaImg = await new Promise(r => { const i = new Image(); i.onload = () => r(i); i.onerror = () => r(null); i.src = 'assets/daga.png?v=20261114171744'; });
   const mats = makeMaterials(renderer, { daga: dagaImg });
   const gTex = glowTexture();
   const spriteMats = {};
@@ -429,6 +429,7 @@ export async function startApp() {
     mats.tramsign.emissiveIntensity = 0.3 + 0.9 * k;
     mats.marquee.emissiveIntensity = 0.12 + 0.75 * k;
     mats.billboard.emissiveIntensity = 0.08 + 0.85 * k;
+    mats.subway.emissiveIntensity = 0.15 + 0.8 * k;
     for (const sm of Object.values(spriteMats)) sm.opacity = 0.85 * k;
     document.body.classList.toggle('night', k > 0.5);
   }
