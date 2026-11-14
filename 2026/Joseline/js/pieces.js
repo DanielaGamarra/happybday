@@ -1,7 +1,7 @@
 // Little Toronto: every model is split into puzzle pieces like a laser-cut wooden kit.
 // Each piece lists the pieces it snaps onto (needs). Order below is the build order.
 import * as THREE from 'three';
-import { shape, roundRect, leafPts, cloudPts, blob, grow, edgeWindows } from './builder.js?v=20261114171333';
+import { shape, roundRect, leafPts, cloudPts, blob, grow, edgeWindows } from './builder.js?v=20261114172250';
 
 const PI = Math.PI;
 export const K = {
@@ -270,11 +270,17 @@ def('fl5', 'Turret & flag', ['fl4'], b => {
   }
   b.cyl(tx, 4.9, tz, 0.4, 0.08, K.copperDark, { seg: 12 });
   b.cyl(tx, 4.98, tz, 0.38, 0.55, K.copper2, { rt: 0.02, seg: 12 });
-  b.cyl(tx, 5.5, tz, 0.018, 0.68, K.black, { seg: 5 });
-  b.box(tx + 0.06, 5.95, tz, 0.08, 0.2, 0.015, K.signRed);
-  b.box(tx + 0.18, 5.95, tz, 0.16, 0.2, 0.015, K.white);
-  b.box(tx + 0.30, 5.95, tz, 0.08, 0.2, 0.015, K.signRed);
-  b.box(tx + 0.18, 6.01, tz, 0.07, 0.08, 0.02, K.signRed);
+  b.cyl(tx, 5.5, tz, 0.022, 1.0, K.black, { seg: 5 });
+  b.box(tx + 0.09, 6.15, tz, 0.14, 0.3, 0.015, K.signRed);
+  b.box(tx + 0.3, 6.15, tz, 0.28, 0.3, 0.015, K.white);
+  b.box(tx + 0.51, 6.15, tz, 0.14, 0.3, 0.015, K.signRed);
+  b.plate(shape(leafPts(0.11)), 0.025, tx + 0.3, 6.3, tz, K.signRed);
+});
+def('peflag', 'Peru flag', ['fl5'], b => {
+  const px = 4.95, pz = -2.45, w = 0.5, h = 0.3, y = 6.15;
+  b.cyl(px, 4.88, pz, 0.06, 0.06, K.copperDark, { seg: 8 });
+  b.cyl(px, 4.9, pz, 0.022, 1.58, K.black, { seg: 5 });
+  ['#d91023', '#ffffff', '#d91023'].forEach((c, i) => b.box(px + 0.02 + w / 6 + i * w / 3, y, pz, w / 3, h, 0.015, c));
 });
 def('mural', 'Flatiron mural', ['fl3'], b => {
   b.add(new THREE.PlaneGeometry(4.0, 2.82), '#fff', { ch: 'mural', uv: true, x: 4.6, y: 2.45, z: -3.765, ry: PI });
@@ -505,7 +511,7 @@ def('mposts', 'Sign posts', ['plaza'], b => {
 });
 def('billboard', 'Rooftop billboard', [], b => {
   const S = 0.5; // overall size
-  const cx = 4.75, cz = -3.05, y0 = 4.85, ry = PI / 4, W = 0.9 * S, H = 0.89 * S;
+  const cx = 5.2, cz = -3.3, y0 = 4.85, ry = PI / 4, W = 0.9 * S, H = 0.89 * S;
   const dx = Math.sin(ry), dz = Math.cos(ry), sx = Math.cos(ry), sz = -Math.sin(ry);
   const fy = y0 + 0.5 * S;
   for (const s of [-1, 1]) {
