@@ -1,7 +1,7 @@
 // Little Toronto: every model is split into puzzle pieces like a laser-cut wooden kit.
 // Each piece lists the pieces it snaps onto (needs). Order below is the build order.
 import * as THREE from 'three';
-import { shape, roundRect, leafPts, cloudPts, blob, grow, edgeWindows } from './builder.js?v=20261113185742';
+import { shape, roundRect, leafPts, cloudPts, blob, grow, edgeWindows } from './builder.js?v=20261114170803';
 
 const PI = Math.PI;
 export const K = {
@@ -504,23 +504,24 @@ def('mposts', 'Sign posts', ['plaza'], b => {
   }
 });
 def('billboard', 'Rooftop billboard', [], b => {
-  const cx = 4.75, cz = -3.05, y0 = 4.85, ry = PI / 4, W = 0.9, H = 0.89;
+  const S = 0.5; // overall size
+  const cx = 4.75, cz = -3.05, y0 = 4.85, ry = PI / 4, W = 0.9 * S, H = 0.89 * S;
   const dx = Math.sin(ry), dz = Math.cos(ry), sx = Math.cos(ry), sz = -Math.sin(ry);
-  const fy = y0 + 0.5;
+  const fy = y0 + 0.5 * S;
   for (const s of [-1, 1]) {
-    const lx = cx + sx * s * 0.33, lz = cz + sz * s * 0.33;
-    b.box(lx, y0, lz, 0.06, 0.52, 0.06, K.pole);
-    b.box(lx - dx * 0.18, y0, lz - dz * 0.18, 0.05, 0.42, 0.05, K.pole);
+    const lx = cx + sx * s * 0.33 * S, lz = cz + sz * s * 0.33 * S;
+    b.box(lx, y0, lz, 0.06 * S, 0.52 * S, 0.06 * S, K.pole);
+    b.box(lx - dx * 0.18 * S, y0, lz - dz * 0.18 * S, 0.05 * S, 0.42 * S, 0.05 * S, K.pole);
   }
-  b.box(cx + dx * 0.12, y0 + 0.4, cz + dz * 0.12, W + 0.08, 0.03, 0.22, K.pole, { ry });
-  b.box(cx, fy - 0.045, cz, W + 0.09, H + 0.09, 0.08, K.black, { ry });
-  b.add(new THREE.PlaneGeometry(W, H), '#fff', { ch: 'billboard', uv: true, x: cx + dx * 0.042, y: fy + H / 2, z: cz + dz * 0.042, ry });
+  b.box(cx + dx * 0.12 * S, y0 + 0.4 * S, cz + dz * 0.12 * S, W + 0.08 * S, 0.03 * S, 0.22 * S, K.pole, { ry });
+  b.box(cx, fy - 0.045 * S, cz, W + 0.09 * S, H + 0.09 * S, 0.08 * S, K.black, { ry });
+  b.add(new THREE.PlaneGeometry(W, H), '#fff', { ch: 'billboard', uv: true, x: cx + dx * 0.042 * S, y: fy + H / 2, z: cz + dz * 0.042 * S, ry });
   for (const s of [-0.27, 0.27]) {
-    const ax = cx + sx * s, az = cz + sz * s, top = fy + H + 0.045;
-    b.box(ax + dx * 0.11, top, az + dz * 0.11, 0.03, 0.03, 0.24, K.pole, { ry });
-    b.box(ax + dx * 0.22, top - 0.05, az + dz * 0.22, 0.12, 0.06, 0.08, K.pole, { ry });
-    b.box(ax + dx * 0.22, top - 0.062, az + dz * 0.22, 0.09, 0.015, 0.05, 0, { ch: 'light', ry });
-    b.glow(ax + dx * 0.3, fy + H * 0.7, az + dz * 0.3, 1.0, '#fff2cf');
+    const ax = cx + sx * s * S, az = cz + sz * s * S, top = fy + H + 0.045 * S;
+    b.box(ax + dx * 0.11 * S, top, az + dz * 0.11 * S, 0.03 * S, 0.03 * S, 0.24 * S, K.pole, { ry });
+    b.box(ax + dx * 0.22 * S, top - 0.05 * S, az + dz * 0.22 * S, 0.12 * S, 0.06 * S, 0.08 * S, K.pole, { ry });
+    b.box(ax + dx * 0.22 * S, top - 0.062 * S, az + dz * 0.22 * S, 0.09 * S, 0.015 * S, 0.05 * S, 0, { ch: 'light', ry });
+    b.glow(ax + dx * 0.3 * S, fy + H * 0.7, az + dz * 0.3 * S, 1.0 * S, '#fff2cf');
   }
 }, { secret: true });
 def('marquee', 'Birthday sign', [], b => {
