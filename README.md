@@ -6,7 +6,7 @@ Little birthday gifts, one folder per year and person.
 
 Live: https://danielagamarra.github.io/happybday/2026/Paula/
 
-Same puzzle as Joseline's, made personal for Paula: Paula holding baby Olivia, Salva and their beagle in the park, a Canada and a Costa Rica flag flying together on the Flatiron, a toucan, a TTC Jane station sign and a High Park capybara.
+Same puzzle as Joseline's, made personal for Paula: Salva pushing baby Olivia in her stroller and Paula walking their beagle Lolita, a Canada and a Costa Rica flag flying together on the Flatiron, a toucan, a TTC Jane station sign and a High Park capybara.
 
 ## 2026 / Joseline: Little Toronto
 

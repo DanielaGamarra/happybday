@@ -1,7 +1,7 @@
 // Little Toronto: every model is split into puzzle pieces like a laser-cut wooden kit.
 // Each piece lists the pieces it snaps onto (needs). Order below is the build order.
 import * as THREE from 'three';
-import { shape, roundRect, leafPts, cloudPts, blob, grow, edgeWindows } from './builder.js?v=20261114171744';
+import { shape, roundRect, leafPts, cloudPts, blob, grow, edgeWindows } from './builder.js?v=20261114172001';
 
 const PI = Math.PI;
 export const K = {
@@ -420,7 +420,7 @@ def('leaves', 'Fallen leaves & pumpkins', ['plaza', 'h2roof'], b => {
   }
 });
 const TAN = '#c8833f', TAN2 = '#9a5a2a', WH = '#f7f1e6', BLK = '#2b2522';
-def('beagle', 'Beagle', ['sign'], b => {
+def('beagle', 'Lolita the beagle', ['sign'], b => {
   const x = 2.15, z = 4.3, y = 0.05;
   for (const lx of [-0.15, 0.15]) for (const lz of [-0.065, 0.065]) b.box(x + lx, y, z + lz, 0.07, 0.17, 0.07, WH);
   b.box(x, y + 0.15, z, 0.46, 0.19, 0.2, TAN);
@@ -497,6 +497,11 @@ function person(b, x, z, o) {
     b.box(x, ty + torH * 0.3, z + 0.14, 0.18, 0.11, 0.12, '#ffc2d6');
     b.box(x + 0.05, ty + torH * 0.3 + 0.07, z + 0.15, 0.08, 0.075, 0.08, o.babySkin);
     b.box(x + 0.05, ty + torH * 0.3 + 0.13, z + 0.15, 0.085, 0.025, 0.085, '#ff8fb3');
+  } else if (o.push) {
+    for (const s of [-1, 1]) {
+      b.box(x + s * (hw / 2 + 0.035), ty + torH - 0.1, z + 0.12, 0.06, 0.06, 0.26, o.top);
+      b.box(x + s * (hw / 2 + 0.035), ty + torH - 0.1, z + 0.27, 0.055, 0.055, 0.05, o.skin);
+    }
   } else {
     for (const s of [-1, 1]) {
       b.box(x + s * (hw / 2 + 0.035), ty + 0.05, z, 0.06, torH - 0.04, 0.07, o.top);
@@ -504,15 +509,45 @@ function person(b, x, z, o) {
     }
   }
 }
-def('salva', 'Salva', ['sign'], b => person(b, 1.0, 4.3, {
-  legH: 0.33, torH: 0.3, wide: 0.26, skin: '#f2d2b6', hair: '#a87a4f', top: '#4f7a5a', bottom: '#3d4a63',
-}));
-def('paula', 'Paula & Olivia', ['sign'], b => person(b, 1.5, 4.3, {
-  legH: 0.26, torH: 0.26, skin: '#c98f62', hair: '#6a4328', highlight: '#c4935e', top: '#c94a3a', bottom: '#2f3550',
-  longHair: true, baby: true, babySkin: '#e6bf9c',
-}));
-
-// ---------- Costa Rica ----------
+// draw with everything turned by ang around (cx, cz): lets a figure face any direction
+function turned(b, cx, cz, ang) {
+  const c = Math.cos(ang), s = Math.sin(ang);
+  const tp = (x, z) => [cx + (x - cx) * c + (z - cz) * s, cz - (x - cx) * s + (z - cz) * c];
+  const wrap = name => (x, y, z, ...rest) => {
+    const o = rest[rest.length - 1] && typeof rest[rest.length - 1] === 'object' && !rest[rest.length - 1].isShape ? rest.pop() : {};
+    const [X, Z] = tp(x, z);
+    return b[name](X, y, Z, ...rest, { ...o, ry: (o.ry || 0) + ang });
+  };
+  return { box: wrap('box'), boxC: wrap('boxC'), cyl: wrap('cyl') };
+}
+function stroller(b, x, z) {
+  const y = 0, F = '#2f5f6b';
+  for (const wx of [-0.12, 0.12]) for (const wz of [0.36, 0.64]) b.cyl(x + wx, y + 0.065, z + wz, 0.065, 0.03, '#26262b', { c: true, rz: PI / 2, seg: 10 });
+  for (const wx of [-0.12, 0.12]) {
+    b.boxC(x + wx, y + 0.42, z + 0.3, 0.025, 0.36, 0.025, '#3a3a40', { rx: 0.35 });
+    b.boxC(x + wx, y + 0.2, z + 0.5, 0.02, 0.2, 0.3, '#3a3a40');
+  }
+  b.box(x, y + 0.59, z + 0.24, 0.3, 0.03, 0.03, '#3a3a40');
+  b.box(x, y + 0.28, z + 0.5, 0.27, 0.16, 0.36, F);
+  b.box(x, y + 0.44, z + 0.55, 0.22, 0.02, 0.22, '#ffc2d6');
+  b.box(x, y + 0.42, z + 0.4, 0.09, 0.08, 0.08, '#e6bf9c');
+  b.box(x, y + 0.49, z + 0.4, 0.095, 0.025, 0.085, '#ff8fb3');
+  b.boxC(x, y + 0.52, z + 0.37, 0.28, 0.02, 0.2, '#ff8fb3', { rx: 0.5 });
+}
+def('salva', 'Salva & Olivia', ['sign'], b => {
+  const t = turned(b, 0.55, 4.3, PI / 2);
+  person(t, 0.55, 4.3, { legH: 0.33, torH: 0.3, wide: 0.26, skin: '#f2d2b6', hair: '#a87a4f', top: '#4f7a5a', bottom: '#3d4a63', push: true });
+  stroller(t, 0.55, 4.3);
+});
+def('paula', 'Paula', ['beagle'], b => {
+  const px = 1.6, pz = 4.3;
+  person(turned(b, px, pz, PI / 2), px, pz, {
+    legH: 0.26, torH: 0.26, skin: '#c98f62', hair: '#6a4328', highlight: '#c4935e', top: '#c94a3a', bottom: '#2f3550', longHair: true,
+  });
+  const hx = px, hy = 0.33, hz = pz + 0.155, cx = 2.35, cy = 0.31, cz = 4.3;
+  const dx = cx - hx, dz = cz - hz, L = Math.hypot(dx, dz);
+  b.boxC((hx + cx) / 2, (hy + cy) / 2 - 0.03, (hz + cz) / 2, L, 0.015, 0.015, K.signRed, { ry: Math.atan2(-dz, dx) });
+});
 def('crflag', 'Costa Rica flag', ['fl5'], b => {
   const px = 4.95, pz = -2.45, top = 6.45, w = 0.5;
   b.cyl(px, 4.88, pz, 0.06, 0.06, K.copperDark, { seg: 8 });
@@ -577,7 +612,7 @@ def('mposts', 'Sign posts', ['plaza'], b => {
 });
 def('billboard', 'Rooftop billboard', [], b => {
   const S = 0.5; // overall size
-  const cx = 4.75, cz = -3.05, y0 = 4.85, ry = PI / 4, W = 0.9 * S, H = 0.89 * S;
+  const cx = 5.2, cz = -3.3, y0 = 4.85, ry = PI / 4, W = 0.9 * S, H = 0.89 * S;
   const dx = Math.sin(ry), dz = Math.cos(ry), sx = Math.cos(ry), sz = -Math.sin(ry);
   const fy = y0 + 0.5 * S;
   for (const s of [-1, 1]) {
