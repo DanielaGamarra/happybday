@@ -1,10 +1,10 @@
 // Little Toronto: the game. Scene, camera, puzzle tray, tutorial, hints and the birthday finale.
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { Builder } from './builder.js?v=20261114172250';
-import { PIECES, CHAPTERS, LAST_ID, TRAM_IDS } from './pieces.js?v=20261114172250';
-import { makeMaterials, glowTexture } from './materials.js?v=20261114172250';
-import { Sound } from './sound.js?v=20261114172250';
+import { Builder } from './builder.js?v=20261114172923';
+import { PIECES, CHAPTERS, LAST_ID, TRAM_IDS } from './pieces.js?v=20261114172923';
+import { makeMaterials, glowTexture } from './materials.js?v=20261114172923';
+import { Sound } from './sound.js?v=20261114172923';
 
 const $ = s => document.querySelector(s);
 const V3 = THREE.Vector3;
@@ -69,7 +69,7 @@ export async function startApp() {
   table.position.y = -0.76; table.receiveShadow = true; scene.add(table);
 
   // ---------- pieces ----------
-  const dagaImg = await new Promise(r => { const i = new Image(); i.onload = () => r(i); i.onerror = () => r(null); i.src = 'assets/daga.png?v=20261114172250'; });
+  const dagaImg = await new Promise(r => { const i = new Image(); i.onload = () => r(i); i.onerror = () => r(null); i.src = 'assets/daga.png?v=20261114172923'; });
   const mats = makeMaterials(renderer, { daga: dagaImg });
   const gTex = glowTexture();
   const spriteMats = {};
@@ -152,7 +152,9 @@ export async function startApp() {
     if (!$('#finale').hidden) bot = Math.min(bot, $('#finale .card-box').getBoundingClientRect().top - 8);
     const free = Math.max(120, bot - top), cy = top + free / 2;
     const s = Math.max(FULL.hw * 2 / (W * 0.94), FULL.up / (free / 2 * 0.94), FULL.dn / (free / 2 * 0.94));
-    Object.assign(camera, { left: -W / 2 * s, right: W / 2 * s, top: cy * s, bottom: -(H - cy) * s });
+    // symmetric frustum so zoom stays centred on the target; a view offset moves that centre to the free area
+    Object.assign(camera, { left: -W / 2 * s, right: W / 2 * s, top: H / 2 * s, bottom: -H / 2 * s });
+    camera.setViewOffset(W, H, 0, H / 2 - cy, W, H);
     camera.updateProjectionMatrix();
   }
   function onResize() {
@@ -282,7 +284,7 @@ export async function startApp() {
     }
     placed.add(id); store.set('placed', [...placed]);
     const r = el.querySelector('img').getBoundingClientRect();
-    flyIn(p, r.left + r.width / 2, r.top + r.height / 2);
+    if (id === LAST_ID) lastPiece(p); else flyIn(p, r.left + r.width / 2, r.top + r.height / 2);
     slots[i] = null; refill(false); updateHUD();
     tut.onPlaced(p);
   }
@@ -311,6 +313,26 @@ export async function startApp() {
       },
     });
   }
+  // the birthday sign: zoom in close, then drop it into place
+  function lastPiece(p) {
+    trayVisible = false; ui.tray.classList.add('gone');
+    clearHint(); ui.coach.hidden = true; ui.hand.hidden = true;
+    setFrustum();
+    userTouched = false;
+    tweenCam({ theta: 0.06 * PI, phi: 1.22, target: p.home.clone(), zoom: 4.4 }, 1.3);
+    const g = p.group, start = p.home.clone().add(new V3(0, 2.5, 0));
+    anims.push({
+      t0: performance.now() + 1200, dur: 1000,
+      step(k) {
+        const e = ease.outCubic(k);
+        g.visible = true;
+        g.position.lerpVectors(start, p.home, e);
+        g.scale.setScalar(0.6 + 0.4 * ease.outBack(k));
+        g.rotation.set(0, (1 - e) * 1.4, 0);
+      },
+      end() { g.position.copy(p.home); g.rotation.set(0, 0, 0); g.scale.setScalar(1); land(p); },
+    });
+  }
   function land(p) {
     const g = p.group;
     sound.place();
@@ -323,7 +345,7 @@ export async function startApp() {
     puff(p);
     renderer.shadowMap.needsUpdate = true;
     const ci = chapterIndex();
-    if (placed.size === TOTAL) { if (!done) { done = true; setTimeout(finale, 500); } return; }
+    if (placed.size === TOTAL) { if (!done) { done = true; setTimeout(finale, 150); } return; }
     if (ci !== curChapter) {
       curChapter = ci;
       sound.chime();
@@ -485,13 +507,17 @@ export async function startApp() {
   function finale(fromLoad) {
     trayVisible = false; ui.tray.classList.add('gone');
     clearHint(); ui.coach.hidden = true; ui.hand.hidden = true;
-    setTimeout(setFrustum, fromLoad ? 0 : 450);
-    tweenCam({ target: FULL.target.clone(), zoom: 1.0, theta: 0.14 * PI, phi: 1.05 }, fromLoad ? 0.01 : 2.2);
-    nightTarget = 1;
+    nightTarget = 1; // lights come on, the name glows
     store.set('done', true);
-    if (fromLoad) { showFinaleCard(); return; }
-    setTimeout(() => { confetti.start(); sound.birthday(); }, 900);
-    setTimeout(showFinaleCard, 2600);
+    const full = { target: FULL.target.clone(), zoom: 1.0, theta: 0.14 * PI, phi: 1.05 };
+    if (fromLoad) { setFrustum(); tweenCam(full, 0.01); showFinaleCard(); return; }
+    setFrustum();
+    // hold on the name, then pull back to the whole city with music, then the card
+    setTimeout(() => {
+      tweenCam(full, 2.6);
+      confetti.start(); sound.birthday();
+      setTimeout(showFinaleCard, 3500);
+    }, 2000);
   }
   function showFinaleCard() {
     ui.finale.hidden = false;
