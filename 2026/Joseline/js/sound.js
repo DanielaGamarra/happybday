@@ -79,15 +79,27 @@ export class Sound {
       o.connect(g).connect(this.master); o.start(t); o.stop(t + dur + 0.05);
     });
   }
-  tap() { this.knock(1.7, 0.6); }
+  // soft woodblock "tock": a dampened body tone, a wood resonance and a tiny click
+  wood(pitch = 1, vol = 1, delay = 0) {
+    const c = this.ensure(); if (!c) return;
+    const t = c.currentTime + delay, f = 420 * pitch;
+    const src = c.createBufferSource(); src.buffer = this.noise;
+    const bp = c.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 2400 * pitch; bp.Q.value = 1.4;
+    const g0 = c.createGain(); this.env(g0, t, 0.18 * vol, 0.018);
+    src.connect(bp).connect(g0).connect(this.master); src.start(t); src.stop(t + 0.04);
+    const lp = c.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 1800; lp.connect(this.master);
+    const o = c.createOscillator(); o.type = 'sine';
+    o.frequency.setValueAtTime(f, t); o.frequency.exponentialRampToValueAtTime(f * 0.9, t + 0.09);
+    const g1 = c.createGain(); this.env(g1, t, 0.42 * vol, 0.11);
+    o.connect(g1).connect(lp); o.start(t); o.stop(t + 0.13);
+    const r = c.createOscillator(); r.type = 'sine'; r.frequency.value = f * 2.76;
+    const g2 = c.createGain(); this.env(g2, t, 0.12 * vol, 0.05);
+    r.connect(g2).connect(lp); r.start(t); r.stop(t + 0.07);
+  }
+  tap() { this.wood(1.5, 0.35); }
   place() {
-    this.knock(1, 1); this.knock(1.3, 0.5, 0.07);
-    const c = this.ctx; if (!c) return;
-    const scale = [523.25, 587.33, 659.25, 783.99, 880, 1046.5];
-    const f = scale[(this.step = ((this.step || 0) + 1) % scale.length)], t = c.currentTime + 0.05;
-    const o = c.createOscillator(); o.type = 'triangle'; o.frequency.value = f;
-    const g = c.createGain(); this.env(g, t, 0.35, 0.45);
-    o.connect(g).connect(this.master); o.start(t); o.stop(t + 0.5);
+    const p = 0.92 + Math.random() * 0.16;
+    this.wood(p, 0.6); this.wood(p * 1.12, 0.22, 0.07);
   }
   nope() {
     const c = this.ensure(); if (!c) return;
