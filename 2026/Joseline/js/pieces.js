@@ -1,7 +1,7 @@
 // Little Toronto: every model is split into puzzle pieces like a laser-cut wooden kit.
 // Each piece lists the pieces it snaps onto (needs). Order below is the build order.
 import * as THREE from 'three';
-import { shape, roundRect, leafPts, cloudPts, blob, grow, edgeWindows } from './builder.js?v=20261114175021';
+import { shape, roundRect, leafPts, cloudPts, blob, grow, edgeWindows } from './builder.js?v=20261114180503';
 
 const PI = Math.PI;
 export const K = {
@@ -17,7 +17,7 @@ export const K = {
   maple1: '#dc4a2c', maple2: '#f07b2d', maple3: '#f6b23c', trunk: '#7b5233',
   plaza: '#ece2cf', letter: '#fbfaf6', lamp: '#2f4a3e', fence: '#b78c5d', picket: '#f1e6cf',
   raccoon: '#8f8b86', raccoonDark: '#3b3937', raccoonLight: '#dcd7ce', bin: '#2f8452', binLid: '#246a41',
-  hat: '#ff7aa8', bikeGreen: '#3aa564', signRed: '#c8322a', board: '#8e2a24', postRed: '#6f2620', lilac: '#b48ad8',
+  hat: '#ff7aa8', bikeGreen: '#3aa564', signRed: '#c8322a', board: '#5a2fd0', postRed: '#6f2620', lilac: '#b48ad8',
 };
 
 export const CHAPTERS = [
@@ -37,8 +37,8 @@ const def = (id, name, needs, make, extra = {}) => PIECES.push({ id, name, ch: C
 
 // ================= 1. Opening the box =================
 CH = 0;
-def('base1', 'Bottom board', [], b => b.slab(blob(-7.95, -6.05, 7.95, 5.75, 1.5, 0.16, 2.3, 0), -0.75, 0.25, K.woodDark));
-def('base2', 'Middle board', ['base1'], b => b.slab(blob(-7.75, -5.85, 7.75, 5.6, 1.35, 0.12, 2.9, 1.7), -0.5, 0.25, K.woodMid));
+def('base1', 'Bottom board', [], b => b.slab(blob(-7.95, -6.05, 7.95, 5.75, 1.5, 0.16, 2.3, 0), -0.75, 0.25, '#ff6fb1'));
+def('base2', 'Middle board', ['base1'], b => b.slab(blob(-7.75, -5.85, 7.75, 5.6, 1.35, 0.12, 2.9, 1.7), -0.5, 0.25, '#2ec4b6'));
 def('ground', 'Grass board', ['base2'], b => {
   b.slab(blob(-7.55, -5.65, 7.55, 5.4, 1.2), -0.25, 0.25, K.grass);
 });

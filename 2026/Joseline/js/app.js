@@ -1,10 +1,10 @@
 // Little Toronto: the game. Scene, camera, puzzle tray, tutorial, hints and the birthday finale.
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { Builder } from './builder.js?v=20261114175021';
-import { PIECES, CHAPTERS, LAST_ID, TRAM_IDS } from './pieces.js?v=20261114175021';
-import { makeMaterials, glowTexture } from './materials.js?v=20261114175021';
-import { Sound } from './sound.js?v=20261114175021';
+import { Builder } from './builder.js?v=20261114180503';
+import { PIECES, CHAPTERS, LAST_ID, TRAM_IDS } from './pieces.js?v=20261114180503';
+import { makeMaterials, glowTexture } from './materials.js?v=20261114180503';
+import { Sound } from './sound.js?v=20261114180503';
 
 const $ = s => document.querySelector(s);
 const V3 = THREE.Vector3;
@@ -29,7 +29,7 @@ export async function startApp() {
   const DEV = new URLSearchParams(location.search).has('dev');
   try {
     await Promise.race([
-      Promise.all([document.fonts.load('900 64px Fraunces'), document.fonts.load('800 64px Nunito')]),
+      Promise.all([document.fonts.load('900 64px Fraunces'), document.fonts.load('800 64px Nunito'), document.fonts.load('700 64px Fredoka')]),
       new Promise(r => setTimeout(r, 1800)),
     ]);
   } catch { /* fonts optional */ }
@@ -52,8 +52,8 @@ export async function startApp() {
   controls.minPolarAngle = 0.35; controls.maxPolarAngle = 1.38;
   controls.touches = { ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_PAN };
 
-  const DAY = { sky: new THREE.Color('#fff3e2'), gnd: new THREE.Color('#b39675'), hemi: 1.75, sunC: new THREE.Color('#fff0d8'), sun: 2.5, shadow: 0.17 };
-  const NIGHT = { sky: new THREE.Color('#5d6fb8'), gnd: new THREE.Color('#2c2546'), hemi: 0.8, sunC: new THREE.Color('#9fb2ff'), sun: 0.6, shadow: 0.1 };
+  const DAY = { sky: new THREE.Color('#fff1fa'), gnd: new THREE.Color('#8fb9c9'), hemi: 1.75, sunC: new THREE.Color('#fff0d8'), sun: 2.5, shadow: 0.17 };
+  const NIGHT = { sky: new THREE.Color('#7a5cd6'), gnd: new THREE.Color('#2a1650'), hemi: 0.8, sunC: new THREE.Color('#b59cff'), sun: 0.6, shadow: 0.1 };
   const hemi = new THREE.HemisphereLight(DAY.sky, DAY.gnd, DAY.hemi);
   const sun = new THREE.DirectionalLight(DAY.sunC, DAY.sun);
   sun.position.set(9, 22, 12); sun.target.position.set(0, 4, 0);
@@ -64,12 +64,12 @@ export async function startApp() {
   sun.shadow.bias = -0.0004; sun.shadow.normalBias = 0.03;
   scene.add(hemi, sun, sun.target);
 
-  const shadowMat = new THREE.ShadowMaterial({ opacity: DAY.shadow, color: 0x5a3b22 });
+  const shadowMat = new THREE.ShadowMaterial({ opacity: DAY.shadow, color: 0x4a2a8a });
   const table = new THREE.Mesh(new THREE.PlaneGeometry(90, 90).rotateX(-PI / 2), shadowMat);
   table.position.y = -0.76; table.receiveShadow = true; scene.add(table);
 
   // ---------- pieces ----------
-  const dagaImg = await new Promise(r => { const i = new Image(); i.onload = () => r(i); i.onerror = () => r(null); i.src = 'assets/daga.png?v=20261114175021'; });
+  const dagaImg = await new Promise(r => { const i = new Image(); i.onload = () => r(i); i.onerror = () => r(null); i.src = 'assets/daga.png?v=20261114180503'; });
   const mats = makeMaterials(renderer, { daga: dagaImg });
   const gTex = glowTexture();
   const spriteMats = {};
@@ -449,7 +449,7 @@ export async function startApp() {
     mats.light.emissiveIntensity = 1.6 * k;
     mats.beacon.emissiveIntensity = 0.25 + 1.4 * k;
     mats.tramsign.emissiveIntensity = 0.3 + 0.9 * k;
-    mats.marquee.emissiveIntensity = 0.12 + 0.75 * k;
+    mats.marquee.emissiveIntensity = 0.12 + 0.42 * k;
     mats.billboard.emissiveIntensity = 0.08 + 0.85 * k;
     for (const sm of Object.values(spriteMats)) sm.opacity = 0.85 * k;
     document.body.classList.toggle('night', k > 0.5);
@@ -477,7 +477,7 @@ export async function startApp() {
     pts.forEach(([x, y], i) => (i ? shp.lineTo(x * 0.22, y * 0.22) : shp.moveTo(x * 0.22, y * 0.22)));
     const mesh = new THREE.InstancedMesh(new THREE.ShapeGeometry(shp), new THREE.MeshBasicMaterial({ side: THREE.DoubleSide }), N);
     mesh.frustumCulled = false; mesh.visible = false; scene.add(mesh);
-    const cols = ['#e8432e', '#f07b2d', '#f6b23c', '#ff7aa8', '#ffffff'].map(c => new THREE.Color(c));
+    const cols = ['#ff4fa3', '#19c3b4', '#7b4cff', '#ffd23f', '#ffffff', '#e8432e'].map(c => new THREE.Color(c));
     const st = []; const o = new THREE.Object3D();
     for (let i = 0; i < N; i++) { mesh.setColorAt(i, cols[i % cols.length]); st.push({}); }
     let t0 = 0, active = false;
@@ -531,11 +531,11 @@ export async function startApp() {
     const g = c2.getContext('2d');
     const night = nightK > 0.5;
     const bg = g.createRadialGradient(c2.width / 2, c2.height * 0.35, 10, c2.width / 2, c2.height * 0.4, c2.height * 0.8);
-    bg.addColorStop(0, night ? '#2a3566' : '#fdf8f0'); bg.addColorStop(1, night ? '#0b1024' : '#e3c7a3');
+    bg.addColorStop(0, night ? '#3a1f7a' : '#fff6e9'); bg.addColorStop(1, night ? '#0e0726' : '#ffd6ea');
     g.fillStyle = bg; g.fillRect(0, 0, c2.width, c2.height);
     g.drawImage(canvas, 0, 0);
     const s = c2.width / 400;
-    g.fillStyle = night ? '#ffe7b0' : '#5a3a22'; g.textAlign = 'center';
+    g.fillStyle = night ? '#ffd23f' : '#7b4cff'; g.textAlign = 'center';
     g.font = `900 ${22 * s}px Fraunces, Georgia, serif`; g.fillText('Little Toronto', c2.width / 2, c2.height - 54 * s);
     g.font = `700 ${12 * s}px Nunito, Arial, sans-serif`; g.fillText('built by Joseline, piece by piece', c2.width / 2, c2.height - 34 * s);
     const blob = await new Promise(r => c2.toBlob(r, 'image/png'));

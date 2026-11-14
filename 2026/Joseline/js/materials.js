@@ -1,6 +1,6 @@
 // Shared materials + procedural canvas textures (wood grain, brick, signs, mural).
 import * as THREE from 'three';
-import { leafPts } from './builder.js?v=20261114175021';
+import { leafPts } from './builder.js?v=20261114180503';
 
 let seed = 7;
 const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
@@ -69,16 +69,16 @@ export function makeMaterials(renderer, imgs = {}) {
 
   const marquee = canvasTex(1024, 402, (g, w, h) => {
     const bg = g.createRadialGradient(w / 2, h / 2, 40, w / 2, h / 2, w * 0.6);
-    bg.addColorStop(0, '#8a2420'); bg.addColorStop(1, '#4d1210');
+    bg.addColorStop(0, '#7b4cff'); bg.addColorStop(1, '#3b1d86');
     g.fillStyle = bg; g.fillRect(0, 0, w, h);
-    g.strokeStyle = '#f6c453'; g.lineWidth = 8; g.strokeRect(18, 18, w - 36, h - 36);
+    g.strokeStyle = '#ffd23f'; g.lineWidth = 8; g.strokeRect(18, 18, w - 36, h - 36);
     g.lineWidth = 2; g.strokeRect(34, 34, w - 68, h - 68);
     g.textAlign = 'center'; g.textBaseline = 'middle';
-    g.fillStyle = '#fff1d2'; g.font = '800 74px Nunito, Arial, sans-serif';
+    g.fillStyle = '#ffffff'; g.font = '700 74px Fredoka, Nunito, Arial, sans-serif';
     g.fillText('H A P P Y   B I R T H D A Y', w / 2, 112);
-    g.font = '900 168px Fraunces, Georgia, serif';
-    g.lineWidth = 10; g.strokeStyle = '#3a0c0a'; g.strokeText('Joseline', w / 2, 262);
-    g.fillStyle = '#ffcc4d'; g.fillText('Joseline', w / 2, 262);
+    g.font = '700 170px Fredoka, Nunito, Arial, sans-serif';
+    g.lineWidth = 12; g.strokeStyle = '#1b1b2f'; g.strokeText('Joseline', w / 2, 262);
+    g.fillStyle = '#19c3b4'; g.fillText('Joseline', w / 2 + 7, 269); g.fillStyle = '#ff4fa3'; g.fillText('Joseline', w / 2, 262);
     g.fillStyle = '#e8432e';
     leafPath(g, 92, 262, 46); g.fill();
     leafPath(g, w - 92, 262, 46); g.fill();
