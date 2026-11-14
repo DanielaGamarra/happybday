@@ -2,6 +2,12 @@
 
 Little birthday gifts, one folder per year and person.
 
+## 2026 / Paula: Little Toronto (with a beagle)
+
+Live: https://danielagamarra.github.io/happybday/2026/Paula/
+
+Same puzzle as Joseline's, with a beagle in the park instead of the monkeys.
+
 ## 2026 / Joseline: Little Toronto
 
 Live: https://danielagamarra.github.io/happybday/2026/Joseline/
