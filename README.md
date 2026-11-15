@@ -6,7 +6,7 @@ Little birthday gifts, one folder per year and person.
 
 Live: https://danielagamarra.github.io/happybday/2026/Paula/
 
-Same puzzle as Joseline's, made personal for Paula: Salva pushing baby Olivia in her stroller and Paula walking their beagle Lolita, the Runnymede Theatre (Bloor West Village) in place of the Flatiron with a Canada and a Costa Rica flag on its roof, the 506 streetcar signed LOLITA & OLIVIA, a toucan, a TTC Runnymede station sign and a High Park capybara.
+Same puzzle as Joseline's, made personal for Paula: Salva pushing baby Olivia in her stroller and Paula walking their beagle Lolita, the Runnymede Theatre (Bloor West Village) in place of the Flatiron with a Canada and a Costa Rica flag on its roof, the 506 streetcar signed LOLITA & OLIVIA, a TTC Runnymede station sign, and a bison and a llama from the High Park zoo.
 
 ## 2026 / Joseline: Little Toronto
 

@@ -1,7 +1,7 @@
 // Little Toronto: every model is split into puzzle pieces like a laser-cut wooden kit.
 // Each piece lists the pieces it snaps onto (needs). Order below is the build order.
 import * as THREE from 'three';
-import { shape, roundRect, leafPts, cloudPts, blob, grow, edgeWindows } from './builder.js?v=20261115160214';
+import { shape, roundRect, leafPts, cloudPts, blob, grow, edgeWindows } from './builder.js?v=20261115160908';
 
 const PI = Math.PI;
 export const K = {
@@ -27,7 +27,7 @@ export const CHAPTERS = [
   { name: 'The 506 streetcar', fact: 'The 506 Carlton runs all the way out to High Park.', focus: [0.4, 1.4, 0.5], zoom: 2.1 },
   { name: 'Runnymede Theatre', fact: 'Opened in 1927, the Runnymede was Bloor West Village\'s grand old movie palace.', focus: [4.6, 1.8, -2.5], zoom: 1.9 },
   { name: 'CN Tower', fact: '553 metres of concrete. On a clear day you can see right across Lake Ontario.', focus: null },
-  { name: 'The neighbourhood', fact: 'High Park is just two stops away, capybaras and all.', focus: [0.3, 1.0, 2.4], zoom: 1.5 },
+  { name: 'The neighbourhood', fact: 'High Park is just two stops away, bison and llamas included.', focus: [0.3, 1.0, 2.4], zoom: 1.5 },
   { name: 'Birthday surprise', fact: 'One last piece. It has your name on it.', focus: null },
 ];
 
@@ -551,32 +551,22 @@ def('paula', 'Paula', ['beagle'], b => {
   b.boxC((hx + cx) / 2, (hy + cy) / 2 - 0.03, (hz + cz) / 2, L, 0.015, 0.015, K.signRed, { ry: Math.atan2(-dz, dx) });
 });
 def('crflag', 'Canada & Costa Rica flags', ['th3'], b => {
-  const y = 2.74;
-  for (const [px, pz] of [[3.0, -2.6], [3.55, -2.6]]) {
+  const y = 2.74, CAX = 2.85, CRX = 3.95, pz = -2.6;
+  for (const px of [CAX, CRX]) {
     b.cyl(px, y, pz, 0.06, 0.06, '#9a8f84', { seg: 8 });
     b.cyl(px, y, pz, 0.022, 1.45, K.black, { seg: 5 });
   }
-  const top = y + 1.42, w = 0.5;
-  b.box(3.0 + 0.02 + 0.07, top - 0.3, -2.6, 0.14, 0.3, 0.015, K.signRed);
-  b.box(3.0 + 0.02 + 0.28, top - 0.3, -2.6, 0.28, 0.3, 0.015, K.white);
-  b.box(3.0 + 0.02 + 0.49, top - 0.3, -2.6, 0.14, 0.3, 0.015, K.signRed);
-  b.plate(shape(leafPts(0.11)), 0.025, 3.0 + 0.02 + 0.28, top - 0.15, -2.6, K.signRed);
-  [['#1f3f8f', 1], ['#ffffff', 1], ['#d22630', 2], ['#ffffff', 1], ['#1f3f8f', 1]].reduce((yy, [c, h]) => {
-    const hh = h * 0.05; b.box(3.55 + 0.02 + w / 2, yy - hh, -2.6, w, hh, 0.015, c); return yy - hh;
+  const top = y + 1.42, w = 0.76, h = 0.43;
+  b.box(CAX + 0.02 + w * 0.125, top - h, pz, w * 0.25, h, 0.015, K.signRed);
+  b.box(CAX + 0.02 + w * 0.5, top - h, pz, w * 0.5, h, 0.015, K.white);
+  b.box(CAX + 0.02 + w * 0.875, top - h, pz, w * 0.25, h, 0.015, K.signRed);
+  b.plate(shape(leafPts(0.155)), 0.025, CAX + 0.02 + w * 0.5, top - h / 2, pz, K.signRed);
+  [['#1f3f8f', 1], ['#ffffff', 1], ['#d22630', 2], ['#ffffff', 1], ['#1f3f8f', 1]].reduce((yy, [c, k]) => {
+    const hh = k * h / 6; b.box(CRX + 0.02 + w / 2, yy - hh, pz, w, hh, 0.015, c); return yy - hh;
   }, top);
 });
-def('toucan', 'Toucan', ['bench'], b => {
-  const x = 4.2, y = 0.6, z = 4.87;
-  b.box(x, y, z, 0.1, 0.14, 0.09, '#1c1c1f');
-  b.box(x + 0.035, y + 0.06, z, 0.04, 0.07, 0.085, '#ffd23f');
-  b.box(x, y + 0.14, z, 0.09, 0.08, 0.08, '#1c1c1f');
-  b.box(x + 0.1, y + 0.16, z, 0.12, 0.05, 0.05, '#f28a1e');
-  b.box(x + 0.15, y + 0.155, z, 0.03, 0.035, 0.045, '#1c1c1f');
-  b.box(x + 0.03, y + 0.19, z + 0.035, 0.03, 0.03, 0.02, '#3fb6e8');
-  b.box(x - 0.08, y + 0.02, z, 0.08, 0.04, 0.06, '#1c1c1f', { rz: 0.4 });
-});
 
-// ---------- West Toronto: Jane station, High Park capybara ----------
+// ---------- West Toronto: Runnymede station, High Park zoo animals ----------
 def('subway', 'Jane station sign', ['sidewalkN'], b => {
   const x = -5.4, z = -1.15;
   b.box(x, 0.1, z, 0.16, 0.06, 0.16, K.pole);
@@ -586,18 +576,34 @@ def('subway', 'Jane station sign', ['sidewalkN'], b => {
   b.add(new THREE.PlaneGeometry(0.58, 0.28), '#fff', { ch: 'subway', uv: true, x, y: 1.71, z: z - 0.032, ry: PI });
   b.glow(x, 1.71, z + 0.2, 1.2, '#ffffff');
 });
-def('capybara', 'High Park capybara', ['trees2'], b => {
-  const x = 6.55, z = 4.2, y = 0, C = '#9a6a43', D = '#6e4a2e';
-  for (const lx of [-0.1, 0.1]) for (const lz of [-0.05, 0.05]) b.box(x + lx, y, z + lz, 0.06, 0.08, 0.06, D);
-  b.box(x, y + 0.07, z, 0.34, 0.18, 0.17, C);
-  b.box(x + 0.21, y + 0.12, z, 0.14, 0.13, 0.13, C);
-  b.box(x + 0.285, y + 0.13, z, 0.04, 0.08, 0.1, D);
+def('bison', 'High Park bison', ['trees2'], b => {
+  const x = 6.45, z = 4.3, y = 0, F = '#5a3d27', M = '#7a5636', D = '#2e2018', H = '#efe6d2';
+  for (const lx of [-0.13, 0.13]) for (const lz of [-0.07, 0.07]) b.box(x + lx, y, z + lz, 0.07, 0.15, 0.07, D);
+  b.box(x - 0.04, y + 0.13, z, 0.36, 0.2, 0.22, F);
+  b.box(x + 0.1, y + 0.13, z, 0.2, 0.3, 0.25, M);
+  b.box(x + 0.24, y + 0.12, z, 0.14, 0.15, 0.17, M);
+  b.box(x + 0.3, y + 0.08, z, 0.06, 0.09, 0.1, D);
+  b.box(x + 0.23, y + 0.06, z, 0.06, 0.08, 0.08, M);
   for (const s of [-1, 1]) {
-    b.box(x + 0.17, y + 0.25, z + s * 0.045, 0.03, 0.035, 0.03, D);
-    b.box(x + 0.25, y + 0.2, z + s * 0.066, 0.02, 0.02, 0.01, '#1c1c1f');
+    b.boxC(x + 0.26, y + 0.28, z + s * 0.1, 0.035, 0.07, 0.035, H, { rx: s * 0.6 });
+    b.box(x + 0.315, y + 0.21, z + s * 0.055, 0.015, 0.025, 0.02, '#111111');
   }
-  b.cyl(x + 0.04, y + 0.25, z, 0.045, 0.07, '#f28a1e', { seg: 8 });
-  b.box(x + 0.04, y + 0.32, z, 0.02, 0.02, 0.04, '#3aa564');
+  b.boxC(x - 0.23, y + 0.24, z, 0.03, 0.14, 0.03, D, { rz: -0.35 });
+});
+def('llama', 'High Park llama', ['plaza'], b => {
+  const x = -6.45, z = 4.45, y = 0, W = '#f2e7d3', E = '#9a7550';
+  for (const lx of [-0.1, 0.1]) for (const lz of [-0.05, 0.05]) b.box(x + lx, y, z + lz, 0.05, 0.24, 0.05, W);
+  b.box(x, y + 0.22, z, 0.32, 0.16, 0.15, W);
+  b.box(x - 0.01, y + 0.33, z, 0.18, 0.04, 0.16, '#ff7aa8');
+  b.box(x - 0.01, y + 0.33, z, 0.06, 0.042, 0.162, '#19c3b4');
+  b.box(x + 0.13, y + 0.3, z, 0.08, 0.3, 0.08, W);
+  b.box(x + 0.16, y + 0.56, z, 0.14, 0.09, 0.09, W);
+  b.box(x + 0.24, y + 0.56, z, 0.05, 0.06, 0.06, E);
+  for (const s of [-1, 1]) {
+    b.box(x + 0.13, y + 0.64, z + s * 0.03, 0.025, 0.07, 0.02, E);
+    b.box(x + 0.2, y + 0.6, z + s * 0.047, 0.015, 0.02, 0.01, '#111111');
+  }
+  b.boxC(x - 0.17, y + 0.33, z, 0.03, 0.08, 0.03, W, { rz: -0.5 });
 });
 
 def('boat', 'Sailboat', ['lake'], b => {
