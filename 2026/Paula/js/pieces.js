@@ -1,7 +1,7 @@
 // Little Toronto: every model is split into puzzle pieces like a laser-cut wooden kit.
 // Each piece lists the pieces it snaps onto (needs). Order below is the build order.
 import * as THREE from 'three';
-import { shape, roundRect, leafPts, cloudPts, blob, grow, edgeWindows } from './builder.js?v=20261115161329';
+import { shape, roundRect, leafPts, cloudPts, blob, grow, edgeWindows } from './builder.js?v=20261115161436';
 
 const PI = Math.PI;
 export const K = {
@@ -490,7 +490,7 @@ function person(b, x, z, o) {
   b.box(x, headY + hs * 0.35, z - hs * 0.47, hs + 0.02, hs * 0.62, 0.04, o.hair);
   if (o.highlight) for (const hx of [-0.06, 0.02, 0.07]) b.box(x + hx, headY + hs - 0.012, z + 0.02, 0.025, 0.064, hs * 0.8, o.highlight);
   if (o.longHair) {
-    b.box(x, ty + torH * 0.45, z - 0.1, hs + 0.04, hs * 0.9, 0.05, o.hair);
+    b.box(x, ty + torH * 0.45, z - 0.1, hs + 0.04, (headY + hs * 0.45) - (ty + torH * 0.45), 0.05, o.hair);
     if (o.highlight) for (const hx of [-0.05, 0.05]) b.box(x + hx, ty + torH * 0.5, z - 0.128, 0.03, hs * 0.8, 0.006, o.highlight);
     for (const s of [-1, 1]) b.box(x + s * (hs / 2 + 0.005), headY - 0.02, z - 0.01, 0.03, hs * 0.85, 0.12, o.hair);
   }
