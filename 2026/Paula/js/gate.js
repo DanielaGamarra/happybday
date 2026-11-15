@@ -1,7 +1,7 @@
 // Boot: load the game (phones, tablets and desktop browsers).
 (async () => {
   try {
-    const m = await import('./app.js?v=20261115161436');
+    const m = await import('./app.js?v=20261115161610');
     await m.startApp();
   } catch (e) {
     console.error(e);

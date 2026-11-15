@@ -196,3 +196,9 @@ body.night #finale .card-box { background: #fffaf2f5; }
 .sheet.ask p { margin: 0 0 8px; font-family: 'Fraunces', Georgia, serif; font-weight: 600; font-size: 20px; line-height: 1.3; }
 #ask { z-index: 45; }
 .party .btn.again { margin-top: 6px; }
+
+/* TV tip on the intro card */
+.tv-tip { display: flex; align-items: center; gap: 10px; text-align: left; margin: -6px -4px 14px; padding: 10px 12px; border-radius: 14px; background: #fff3dc; box-shadow: inset 0 0 0 1.5px #8a5a3530; }
+.tv-tip svg { flex: none; width: 30px; height: 30px; fill: none; stroke: var(--red); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.tv-tip p { margin: 0; font-size: 13px; line-height: 1.35; font-weight: 700; color: var(--ink-soft); }
+.tv-tip b { color: var(--ink); }
