@@ -1,10 +1,10 @@
 // Little Toronto: the game. Scene, camera, puzzle tray, tutorial, hints and the birthday finale.
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { Builder } from './builder.js?v=20261115161802';
-import { PIECES, CHAPTERS, LAST_ID, TRAM_IDS } from './pieces.js?v=20261115161802';
-import { makeMaterials, glowTexture } from './materials.js?v=20261115161802';
-import { Sound } from './sound.js?v=20261115161802';
+import { Builder } from './builder.js?v=20261115162237';
+import { PIECES, CHAPTERS, LAST_ID, TRAM_IDS } from './pieces.js?v=20261115162237';
+import { makeMaterials, glowTexture } from './materials.js?v=20261115162237';
+import { Sound } from './sound.js?v=20261115162237';
 
 const $ = s => document.querySelector(s);
 const V3 = THREE.Vector3;
@@ -69,7 +69,7 @@ export async function startApp() {
   table.position.y = -0.76; table.receiveShadow = true; scene.add(table);
 
   // ---------- pieces ----------
-  const dagaImg = await new Promise(r => { const i = new Image(); i.onload = () => r(i); i.onerror = () => r(null); i.src = 'assets/daga.png?v=20261115161802'; });
+  const dagaImg = await new Promise(r => { const i = new Image(); i.onload = () => r(i); i.onerror = () => r(null); i.src = 'assets/daga.png?v=20261115162237'; });
   const mats = makeMaterials(renderer, { daga: dagaImg });
   const gTex = glowTexture();
   const spriteMats = {};
@@ -467,7 +467,7 @@ export async function startApp() {
     mats.bulbB.emissiveIntensity = (on ? 0.25 : 1.7) * nightK;
     mats.beacon.emissiveIntensity = (0.25 + 1.4 * nightK) * (Math.sin(t * 3) > 0 ? 1 : 0.35);
     if (done) {
-      tramT += dt;
+      if (!touring) tramT += dt;
       const dx = 2.6 * Math.sin(tramT * 0.32);
       for (const p of tramGroups) p.group.position.x = p.home.x + dx;
     }
@@ -522,6 +522,35 @@ export async function startApp() {
       setTimeout(showFinaleCard, 3500);
     }, 2000);
   }
+  // ---------- Easter egg tour ----------
+  let touring = false;
+  const wait = ms => new Promise(r => setTimeout(r, ms));
+  async function eggTour() {
+    touring = true; controls.autoRotate = false; controls.maxZoom = 12;
+    ui.finale.hidden = true; $('#btnParty').hidden = true; setFrustum();
+    const tram = byId.tram6.group.position;
+    const stops = [
+      { theta: 0.16 * PI, phi: 1.2, target: new V3(1.3, 0.42, 4.3), zoom: 7.5, text: 'Salva, Olivia, Paula and Lolita out for a walk' },
+      { theta: -0.12 * PI, phi: 1.3, target: new V3(4.6, 1.14, -1.28), zoom: 7, text: 'Now showing at the Runnymede: Vancouver Crew' },
+      { theta: 0.5 * PI, phi: 1.3, target: new V3(tram.x + 2.31, 1.4, 0.5), zoom: 9, text: 'The 506 to Lolita & Olivia' },
+    ];
+    const cap = $('#eggCap');
+    for (const s of stops) {
+      if (!touring) break;
+      tweenCam(s, 1.4);
+      $('#eggText').textContent = s.text; cap.hidden = false;
+      cap.classList.remove('show'); void cap.offsetWidth; cap.classList.add('show');
+      await wait(3800);
+    }
+    cap.hidden = true; touring = false;
+    setTimeout(() => { controls.maxZoom = 4.5; }, 1700);
+    tweenCam({ target: FULL.target.clone(), zoom: 1.0, theta: 0.14 * PI, phi: 1.05 }, 1.6);
+    await wait(1700);
+    showFinaleCard();
+  }
+  $('#finEggs').addEventListener('click', () => { sound.tap(); eggTour(); });
+  $('#eggCap').addEventListener('click', () => { touring = false; });
+
   function showFinaleCard() {
     ui.finale.hidden = false;
     requestAnimationFrame(() => { setFrustum(); dirty = true; });

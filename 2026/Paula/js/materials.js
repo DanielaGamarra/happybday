@@ -1,6 +1,6 @@
 // Shared materials + procedural canvas textures (wood grain, brick, signs, mural).
 import * as THREE from 'three';
-import { leafPts } from './builder.js?v=20261115161802';
+import { leafPts } from './builder.js?v=20261115162237';
 
 let seed = 7;
 const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;

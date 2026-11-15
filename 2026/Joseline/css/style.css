@@ -257,3 +257,9 @@ body { font-family: 'Fredoka', 'Nunito', system-ui, sans-serif; background: url(
 .sheet .row.danger { color: var(--pink); }
 .sheet-wrap { background: #1b1b2f66; }
 body.night #finale .card-box { background: #fff; }
+
+/* TV tip on the intro card (Memphis) */
+.tv-tip { display: flex; align-items: center; gap: 10px; text-align: left; margin: -6px -4px 14px; padding: 10px 12px; border-radius: 14px; background: var(--yellow); border: var(--line); box-shadow: 4px 4px 0 var(--ink); }
+.tv-tip svg { flex: none; width: 30px; height: 30px; fill: #fff; stroke: var(--ink); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.tv-tip p { margin: 0; font-size: 13px; line-height: 1.35; font-weight: 500; color: var(--ink); }
+.tv-tip b { font-weight: 700; }
