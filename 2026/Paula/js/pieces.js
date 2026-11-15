@@ -1,7 +1,7 @@
 // Little Toronto: every model is split into puzzle pieces like a laser-cut wooden kit.
 // Each piece lists the pieces it snaps onto (needs). Order below is the build order.
 import * as THREE from 'three';
-import { shape, roundRect, leafPts, cloudPts, blob, grow, edgeWindows } from './builder.js?v=20261114175021';
+import { shape, roundRect, leafPts, cloudPts, blob, grow, edgeWindows } from './builder.js?v=20261115160214';
 
 const PI = Math.PI;
 export const K = {
@@ -22,12 +22,12 @@ export const K = {
 
 export const CHAPTERS = [
   { name: 'Opening the box', fact: 'Every great city starts with a good foundation.', focus: null },
-  { name: 'Queen Street', fact: 'Toronto runs one of the busiest streetcar networks in North America.', focus: [0, 1.2, 0.4], zoom: 1.7 },
+  { name: 'Bloor West Village', fact: 'Runnymede station sits right in the middle of Bloor West Village.', focus: [0, 1.2, 0.4], zoom: 1.7 },
   { name: 'Bay-and-gable row', fact: 'Bay-and-gable houses are a Toronto original, built by the thousands in the late 1800s.', focus: [-0.5, 1.7, -2.8], zoom: 2.0 },
-  { name: 'The 504 streetcar', fact: 'The 504 King is one of the busiest streetcar routes in the city.', focus: [0.4, 1.4, 0.5], zoom: 2.1 },
-  { name: 'Gooderham Flatiron', fact: 'Finished in 1892, a whole decade before New York got its Flatiron.', focus: [4.6, 2.7, -2.8], zoom: 1.9 },
+  { name: 'The 506 streetcar', fact: 'The 506 Carlton runs all the way out to High Park.', focus: [0.4, 1.4, 0.5], zoom: 2.1 },
+  { name: 'Runnymede Theatre', fact: 'Opened in 1927, the Runnymede was Bloor West Village\'s grand old movie palace.', focus: [4.6, 1.8, -2.5], zoom: 1.9 },
   { name: 'CN Tower', fact: '553 metres of concrete. On a clear day you can see right across Lake Ontario.', focus: null },
-  { name: 'The neighbourhood', fact: 'Raccoons run this town. Toronto even built raccoon-proof green bins.', focus: [0.3, 1.0, 2.4], zoom: 1.5 },
+  { name: 'The neighbourhood', fact: 'High Park is just two stops away, capybaras and all.', focus: [0.3, 1.0, 2.4], zoom: 1.5 },
   { name: 'Birthday surprise', fact: 'One last piece. It has your name on it.', focus: null },
 ];
 
@@ -231,55 +231,57 @@ def('tram6', 'Route sign', ['tram4'], b => {
 
 // ================= 5. Gooderham Flatiron =================
 CH = 4;
-const FP = [[2.5, -3.75], [6.7, -3.75], [4.78, -1.98], [4.55, -1.82], [4.25, -1.76], [3.98, -1.82]];
-def('fl1', 'Stone ground floor', ['sidewalkN'], b => {
-  b.slab(FP, 0, 0.95, K.stone);
-  edgeWindows(b, FP, [0, 1, 5], 0.18, 0.58, 0.36, 0.16);
-  edgeWindows(b, FP, [3], 0.12, 0.66, 0.22, 0.1, { ch: 'body', color: K.copperDark });
-});
-def('fl2', 'Brick floors', ['fl1'], b => {
-  b.slab(grow(FP, 0.04), 0.95, 0.08, K.trim);
-  b.slab(FP, 1.03, 1.5, K.brick, { ch: 'brick' });
-  for (const y of [1.2, 1.88]) {
-    edgeWindows(b, FP, [1, 5], y, 0.44, 0.2, 0.2, { sill: K.trim });
-    edgeWindows(b, FP, [2, 3, 4], y, 0.44, 0.14, 0.1);
+// Runnymede Theatre (Bloor West Village), on the Flatiron's old lot
+const TX0 = 2.6, TX1 = 6.6, TZF = -1.8, TZB = -3.7, TXC = (TX0 + TX1) / 2, TZC = (TZF + TZB) / 2, TW_ = TX1 - TX0, TD_ = TZF - TZB;
+const CREAM = '#ead9b6', CREAM2 = '#d7c29a', TRIM2 = '#fbf3e1';
+def('th1', 'Theatre shopfronts', ['sidewalkN'], b => {
+  b.box(TXC, 0, TZC, TW_, 1.0, TD_, CREAM2);
+  b.box(TXC, 0, TZC, TW_ + 0.03, 0.18, TD_ + 0.03, K.stone);
+  for (const x of [3.05, 3.7, 5.5, 6.15]) {
+    b.box(x, 0.24, TZF, 0.5, 0.6, 0.05, 0, { ch: 'glow' });
+    b.box(x, 0.86, TZF, 0.58, 0.05, 0.08, TRIM2);
   }
+  b.box(TXC, 0.18, TZF, 1.1, 0.72, 0.06, '#6a4228');
+  for (const x of [-0.27, 0.27]) b.box(TXC + x, 0.22, TZF + 0.01, 0.42, 0.55, 0.05, 0, { ch: 'glow' });
+  for (const z of [-2.3, -3.2]) b.box(TX1, 0.3, z, 0.05, 0.55, 0.4, 0, { ch: 'glow' });
 });
-def('fl3', 'Top floors & cornice', ['fl2'], b => {
-  b.slab(grow(FP, 0.03), 2.53, 0.06, K.trim);
-  b.slab(FP, 2.59, 1.31, K.brick, { ch: 'brick' });
-  for (const y of [2.75, 3.38]) {
-    edgeWindows(b, FP, [1, 5], y, 0.42, 0.2, 0.2, { sill: K.trim });
-    edgeWindows(b, FP, [2, 3, 4], y, 0.42, 0.14, 0.1);
+def('th2', 'Theatre facade', ['th1'], b => {
+  b.box(TXC, 1.0, TZC, TW_ + 0.06, 0.08, TD_ + 0.06, TRIM2);
+  b.box(TXC, 1.08, TZC, TW_, 1.52, TD_, CREAM, { ch: 'brick' });
+  for (const x of [2.68, 3.65, 4.6, 5.55, 6.52]) b.box(x, 1.08, TZF + 0.02, 0.14, 1.52, 0.06, TRIM2);
+  for (const x of [3.13, 4.12, 5.08, 6.04]) {
+    b.box(x, 1.28, TZF, 0.46, 0.9, 0.05, 0, { ch: 'glow' });
+    b.cyl(x, 2.18, TZF, 0.23, 0.05, 0, { c: true, rx: PI / 2, seg: 14, ch: 'glow' });
+    b.box(x, 1.22, TZF + 0.01, 0.56, 0.06, 0.07, TRIM2);
   }
-  b.slab(grow(FP, 0.1), 3.9, 0.15, K.trim);
+  for (const z of [-2.3, -3.2]) b.box(TX1, 1.45, z, 0.05, 0.75, 0.4, 0, { ch: 'glow' });
 });
-def('fl4', 'Copper roof', ['fl3'], b => {
-  const a = grow(FP, -0.05), c = grow(FP, -0.22), d = grow(FP, -0.4);
-  b.slab(a, 4.05, 0.42, K.copper);
-  b.slab(c, 4.47, 0.38, K.copper2);
-  b.slab(d, 4.85, 0.08, K.copperDark);
-  edgeWindows(b, a, [1, 5], 4.13, 0.26, 0.17, 0.42, { out: 0.03 });
+def('th3', 'Parapet & roof', ['th2'], b => {
+  b.box(TXC, 2.6, TZC, TW_ + 0.12, 0.1, TD_ + 0.12, TRIM2);
+  b.box(TXC, 2.7, TZC, TW_ - 0.1, 0.04, TD_ - 0.1, '#9a8f84');
+  b.box(TXC, 2.7, TZF - 0.02, TW_, 0.22, 0.14, CREAM2);
+  b.box(TXC, 2.92, TZF - 0.02, 2.2, 0.22, 0.14, CREAM2);
+  b.box(TXC, 3.14, TZF - 0.02, 1.0, 0.26, 0.14, CREAM2);
+  b.box(TXC, 3.4, TZF - 0.02, 1.08, 0.06, 0.18, TRIM2);
+  b.boxC(TXC, 3.15, TZF + 0.06, 0.2, 0.2, 0.04, '#b8262b', { rz: PI / 4 });
+  b.boxC(TXC, 3.15, TZF + 0.08, 0.1, 0.1, 0.04, '#ffd36b', { rz: PI / 4 });
 });
-def('fl5', 'Turret & flag', ['fl4'], b => {
-  const tx = 4.27, tz = -2.02;
-  b.cyl(tx, 4.05, tz, 0.36, 0.85, K.copper, { seg: 12 });
-  for (let i = 0; i < 5; i++) {
-    const a = PI * 0.05 + i * PI * 0.22;
-    b.box(tx + Math.cos(a) * 0.36, 4.3, tz + Math.sin(a) * 0.36, 0.12, 0.3, 0.04, 0, { ch: 'glow', ry: PI / 2 - a });
-  }
-  b.cyl(tx, 4.9, tz, 0.4, 0.08, K.copperDark, { seg: 12 });
-  b.cyl(tx, 4.98, tz, 0.38, 0.55, K.copper2, { rt: 0.02, seg: 12 });
-  b.cyl(tx, 5.5, tz, 0.022, 1.0, K.black, { seg: 5 });
-  b.box(tx + 0.09, 6.15, tz, 0.14, 0.3, 0.015, K.signRed);
-  b.box(tx + 0.3, 6.15, tz, 0.28, 0.3, 0.015, K.white);
-  b.box(tx + 0.51, 6.15, tz, 0.14, 0.3, 0.015, K.signRed);
-  b.plate(shape(leafPts(0.11)), 0.025, tx + 0.3, 6.3, tz, K.signRed);
+def('th4', 'Theatre marquee', ['th2'], b => {
+  const y = 1.02, zf = TZF + 0.52;
+  b.box(TXC, y, TZF + 0.26, 2.6, 0.24, 0.52, '#24242b');
+  b.add(new THREE.PlaneGeometry(2.48, 0.19), '#fff', { ch: 'theatre', uv: true, x: TXC, y: y + 0.12, z: zf + 0.003 });
+  let i = 0;
+  for (let x = -1.25; x <= 1.26; x += 0.125) b.box(TXC + x, y + 0.24, zf - 0.03, 0.05, 0.04, 0.05, 0, { ch: (i++ % 2) ? 'bulbA' : 'bulbB' });
+  for (const s of [-1, 1]) b.boxC(TXC + s * 1.1, y + 0.55, TZF + 0.26, 0.025, 0.7, 0.025, '#24242b', { rx: 0.65 });
+  b.glow(TXC, y - 0.1, zf, 2.6, '#ffe2a0');
 });
-def('mural', 'Flatiron mural', ['fl3'], b => {
-  b.add(new THREE.PlaneGeometry(4.0, 2.82), '#fff', { ch: 'mural', uv: true, x: 4.6, y: 2.45, z: -3.765, ry: PI });
-}, { view: 0.88 * PI });
-
+def('th5', 'RUNNYMEDE sign', ['th4'], b => {
+  const x = TXC, z = TZF + 0.3, y0 = 1.32, H = 2.3, D = 0.42;
+  b.box(x, y0, z, 0.1, H, D + 0.06, '#24242b');
+  for (const s of [-1, 1]) b.add(new THREE.PlaneGeometry(D, H - 0.06), '#fff', { ch: 'blade', uv: true, x: x + s * 0.052, y: y0 + H / 2, z, ry: s * PI / 2 });
+  b.box(x, y0 + H, z, 0.14, 0.12, D + 0.1, '#ffd36b');
+  b.glow(x + 0.2, y0 + H * 0.55, z, 3.0, '#ff7a5a');
+});
 // ================= 6. CN Tower =================
 CH = 5;
 const CX = -5.0, CZ = -2.95;
@@ -548,12 +550,19 @@ def('paula', 'Paula', ['beagle'], b => {
   const dx = cx - hx, dz = cz - hz, L = Math.hypot(dx, dz);
   b.boxC((hx + cx) / 2, (hy + cy) / 2 - 0.03, (hz + cz) / 2, L, 0.015, 0.015, K.signRed, { ry: Math.atan2(-dz, dx) });
 });
-def('crflag', 'Costa Rica flag', ['fl5'], b => {
-  const px = 4.95, pz = -2.45, top = 6.45, w = 0.5;
-  b.cyl(px, 4.88, pz, 0.06, 0.06, K.copperDark, { seg: 8 });
-  b.cyl(px, 4.9, pz, 0.022, 1.58, K.black, { seg: 5 });
-  [['#1f3f8f', 1], ['#ffffff', 1], ['#d22630', 2], ['#ffffff', 1], ['#1f3f8f', 1]].reduce((y, [c, h]) => {
-    const hh = h * 0.05; b.box(px + 0.02 + w / 2, y - hh, pz, w, hh, 0.015, c); return y - hh;
+def('crflag', 'Canada & Costa Rica flags', ['th3'], b => {
+  const y = 2.74;
+  for (const [px, pz] of [[3.0, -2.6], [3.55, -2.6]]) {
+    b.cyl(px, y, pz, 0.06, 0.06, '#9a8f84', { seg: 8 });
+    b.cyl(px, y, pz, 0.022, 1.45, K.black, { seg: 5 });
+  }
+  const top = y + 1.42, w = 0.5;
+  b.box(3.0 + 0.02 + 0.07, top - 0.3, -2.6, 0.14, 0.3, 0.015, K.signRed);
+  b.box(3.0 + 0.02 + 0.28, top - 0.3, -2.6, 0.28, 0.3, 0.015, K.white);
+  b.box(3.0 + 0.02 + 0.49, top - 0.3, -2.6, 0.14, 0.3, 0.015, K.signRed);
+  b.plate(shape(leafPts(0.11)), 0.025, 3.0 + 0.02 + 0.28, top - 0.15, -2.6, K.signRed);
+  [['#1f3f8f', 1], ['#ffffff', 1], ['#d22630', 2], ['#ffffff', 1], ['#1f3f8f', 1]].reduce((yy, [c, h]) => {
+    const hh = h * 0.05; b.box(3.55 + 0.02 + w / 2, yy - hh, -2.6, w, hh, 0.015, c); return yy - hh;
   }, top);
 });
 def('toucan', 'Toucan', ['bench'], b => {
@@ -612,7 +621,7 @@ def('mposts', 'Sign posts', ['plaza'], b => {
 });
 def('billboard', 'Rooftop billboard', [], b => {
   const S = 0.5; // overall size
-  const cx = 5.2, cz = -3.3, y0 = 4.85, ry = PI / 4, W = 0.9 * S, H = 0.89 * S;
+  const cx = 5.7, cz = -3.0, y0 = 2.74, ry = PI / 4, W = 0.9 * S, H = 0.89 * S;
   const dx = Math.sin(ry), dz = Math.cos(ry), sx = Math.cos(ry), sz = -Math.sin(ry);
   const fy = y0 + 0.5 * S;
   for (const s of [-1, 1]) {

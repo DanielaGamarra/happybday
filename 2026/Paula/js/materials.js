@@ -1,6 +1,6 @@
 // Shared materials + procedural canvas textures (wood grain, brick, signs, mural).
 import * as THREE from 'three';
-import { leafPts } from './builder.js?v=20261114175021';
+import { leafPts } from './builder.js?v=20261115160214';
 
 let seed = 7;
 const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
@@ -17,6 +17,12 @@ function canvasTex(w, h, draw, repeat = false) {
 function leafPath(g, x, y, s) {
   const p = leafPts(s);
   g.beginPath(); p.forEach(([lx, ly], i) => i ? g.lineTo(x + lx, y - ly) : g.moveTo(x + lx, y - ly)); g.closePath();
+}
+
+function fitText(g, text, x, y, maxW, size, weight, family = 'Nunito, Arial, sans-serif') {
+  let s = size;
+  do { g.font = `${weight} ${s}px ${family}`; s -= 2; } while (g.measureText(text).width > maxW && s > 10);
+  g.fillText(text, x, y);
 }
 
 export function glowTexture() {
@@ -60,8 +66,8 @@ export function makeMaterials(renderer, imgs = {}) {
 
   const tram = canvasTex(512, 108, (g, w, h) => {
     g.fillStyle = '#161616'; g.fillRect(0, 0, w, h);
-    g.fillStyle = '#ffb23e'; g.font = '800 70px Nunito, Arial, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
-    g.fillText('504 PAULA', w / 2, h / 2 + 4);
+    g.fillStyle = '#ffb23e'; g.textAlign = 'center'; g.textBaseline = 'middle';
+    fitText(g, '506 LOLITA & OLIVIA', w / 2, h / 2 + 4, w - 24, 70, 800);
     g.fillStyle = 'rgba(0,0,0,.45)';
     for (let x = 0; x < w; x += 5) g.fillRect(x, 0, 1.5, h);
     for (let y = 0; y < h; y += 5) g.fillRect(0, y, w, 1.5);
@@ -122,7 +128,19 @@ export function makeMaterials(renderer, imgs = {}) {
     g.fillText('TTC', 22, 34);
     g.fillStyle = '#00923f'; g.beginPath(); g.arc(70, 160, 46, 0, Math.PI * 2); g.fill();
     g.fillStyle = '#fff'; g.font = '900 60px Nunito, Arial, sans-serif'; g.textAlign = 'center'; g.fillText('2', 70, 164);
-    g.textAlign = 'left'; g.font = '900 96px Nunito, Arial, sans-serif'; g.fillText('Jane', 140, 164);
+    g.textAlign = 'left'; fitText(g, 'Runnymede', 136, 164, w - 150, 96, 900);
+  });
+
+  const theatre = canvasTex(1024, 96, (g, w, h) => {
+    g.fillStyle = '#141418'; g.fillRect(0, 0, w, h);
+    g.fillStyle = '#ffd36b'; g.textAlign = 'center'; g.textBaseline = 'middle';
+    fitText(g, 'NOW SHOWING  \u2605  LITTLE TORONTO', w / 2, h / 2 + 3, w - 40, 64, 900);
+  });
+  const blade = canvasTex(128, 832, (g, w, h) => {
+    g.fillStyle = '#b8262b'; g.fillRect(0, 0, w, h);
+    g.strokeStyle = '#ffd36b'; g.lineWidth = 6; g.strokeRect(8, 8, w - 16, h - 16);
+    g.fillStyle = '#fff6dc'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.font = '900 78px Nunito, Arial, sans-serif';
+    [...'RUNNYMEDE'].forEach((ch, i) => g.fillText(ch, w / 2, 62 + i * 88));
   });
 
   const lam = o => new THREE.MeshLambertMaterial({ flatShading: true, ...o });
@@ -140,6 +158,8 @@ export function makeMaterials(renderer, imgs = {}) {
     tramsign: lam({ map: tram, emissive: 0xffffff, emissiveMap: tram, emissiveIntensity: 0.3 }),
     marquee: lam({ map: marquee, emissive: 0xffffff, emissiveMap: marquee, emissiveIntensity: 0.12 }),
     mural: lam({ map: mural }),
+    theatre: lam({ map: theatre, emissive: 0xffffff, emissiveMap: theatre, emissiveIntensity: 0.2 }),
+    blade: lam({ map: blade, emissive: 0xffffff, emissiveMap: blade, emissiveIntensity: 0.15 }),
     subway: lam({ map: subway, emissive: 0xffffff, emissiveMap: subway, emissiveIntensity: 0.15 }),
     billboard: lam({ map: bill, emissive: 0xffffff, emissiveMap: bill, emissiveIntensity: 0.08 }),
   };
