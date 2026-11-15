@@ -1,6 +1,6 @@
 // Shared materials + procedural canvas textures (wood grain, brick, signs, mural).
 import * as THREE from 'three';
-import { leafPts } from './builder.js?v=20261115160908';
+import { leafPts } from './builder.js?v=20261115161035';
 
 let seed = 7;
 const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
@@ -134,7 +134,7 @@ export function makeMaterials(renderer, imgs = {}) {
   const theatre = canvasTex(1024, 96, (g, w, h) => {
     g.fillStyle = '#141418'; g.fillRect(0, 0, w, h);
     g.fillStyle = '#ffd36b'; g.textAlign = 'center'; g.textBaseline = 'middle';
-    fitText(g, 'NOW SHOWING  \u2605  LITTLE TORONTO', w / 2, h / 2 + 3, w - 40, 64, 900);
+    fitText(g, 'NOW SHOWING  \u2605  VANCOUVER CREW', w / 2, h / 2 + 3, w - 40, 64, 900);
   });
   const blade = canvasTex(128, 832, (g, w, h) => {
     g.fillStyle = '#b8262b'; g.fillRect(0, 0, w, h);
