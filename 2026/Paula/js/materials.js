@@ -1,6 +1,6 @@
 // Shared materials + procedural canvas textures (wood grain, brick, signs, mural).
 import * as THREE from 'three';
-import { leafPts } from './builder.js?v=20261115161035';
+import { leafPts } from './builder.js?v=20261115161204';
 
 let seed = 7;
 const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
@@ -80,14 +80,34 @@ export function makeMaterials(renderer, imgs = {}) {
     g.strokeStyle = '#f6c453'; g.lineWidth = 8; g.strokeRect(18, 18, w - 36, h - 36);
     g.lineWidth = 2; g.strokeRect(34, 34, w - 68, h - 68);
     g.textAlign = 'center'; g.textBaseline = 'middle';
-    g.fillStyle = '#fff1d2'; g.font = '800 74px Nunito, Arial, sans-serif';
-    g.fillText('H A P P Y   B I R T H D A Y', w / 2, 112);
+    g.fillStyle = '#fff1d2'; g.font = '800 64px Nunito, Arial, sans-serif';
+    g.fillText('H A P P Y   B I R T H D A Y', w / 2, 108);
     g.font = '900 168px Fraunces, Georgia, serif';
     g.lineWidth = 10; g.strokeStyle = '#3a0c0a'; g.strokeText('Paula', w / 2, 262);
     g.fillStyle = '#ffcc4d'; g.fillText('Paula', w / 2, 262);
-    g.fillStyle = '#e8432e';
-    leafPath(g, 92, 262, 46); g.fill();
-    leafPath(g, w - 92, 262, 46); g.fill();
+    // CN Tower (left)
+    const gold = '#ffcc4d', cx = 100;
+    g.fillStyle = gold;
+    g.beginPath(); g.moveTo(cx - 14, 360); g.lineTo(cx - 4, 150); g.lineTo(cx + 4, 150); g.lineTo(cx + 14, 360); g.closePath(); g.fill();
+    g.beginPath(); g.ellipse(cx, 240, 30, 13, 0, 0, Math.PI * 2); g.fill();
+    g.fillStyle = '#8a2420'; g.fillRect(cx - 26, 237, 52, 5);
+    g.fillStyle = gold; g.beginPath(); g.ellipse(cx, 198, 10, 6, 0, 0, Math.PI * 2); g.fill();
+    g.fillRect(cx - 2, 118, 4, 34);
+    g.fillStyle = '#ff5a46'; g.beginPath(); g.arc(cx, 116, 4, 0, Math.PI * 2); g.fill();
+    // Science World (right): geodesic dome on its base
+    const sx = w - 104, sy = 262, r = 56;
+    g.fillStyle = gold; g.fillRect(sx - 62, 330, 124, 14); g.fillRect(sx - 8, 314, 16, 18);
+    g.beginPath(); g.arc(sx, sy, r, 0, Math.PI * 2); g.fill();
+    g.save(); g.beginPath(); g.arc(sx, sy, r - 1, 0, Math.PI * 2); g.clip();
+    g.strokeStyle = '#8a2420'; g.lineWidth = 3;
+    for (let k = -4; k <= 4; k++) {
+      g.beginPath(); g.moveTo(sx - r, sy + k * 22); g.lineTo(sx + r, sy + k * 22); g.stroke();
+      g.beginPath(); g.moveTo(sx + k * 26 - r, sy - r * 1.2); g.lineTo(sx + k * 26 + r * 0.7, sy + r * 1.2); g.stroke();
+      g.beginPath(); g.moveTo(sx + k * 26 + r, sy - r * 1.2); g.lineTo(sx + k * 26 - r * 0.7, sy + r * 1.2); g.stroke();
+    }
+    g.restore();
+    g.strokeStyle = gold; g.lineWidth = 3; g.beginPath(); g.arc(sx, sy, r, 0, Math.PI * 2); g.stroke();
+    g.fillStyle = gold; g.fillRect(sx - 1.5, sy - r - 24, 3, 26);
   });
 
   const mural = canvasTex(1024, 722, (g, w, h) => {
