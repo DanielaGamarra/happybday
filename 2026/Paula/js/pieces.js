@@ -1,7 +1,7 @@
 // Little Toronto: every model is split into puzzle pieces like a laser-cut wooden kit.
 // Each piece lists the pieces it snaps onto (needs). Order below is the build order.
 import * as THREE from 'three';
-import { shape, roundRect, leafPts, cloudPts, blob, grow, edgeWindows } from './builder.js?v=20261115161204';
+import { shape, roundRect, leafPts, cloudPts, blob, grow, edgeWindows } from './builder.js?v=20261115161329';
 
 const PI = Math.PI;
 export const K = {
@@ -27,7 +27,7 @@ export const CHAPTERS = [
   { name: 'The 506 streetcar', fact: 'The 506 Carlton runs all the way out to High Park.', focus: [0.4, 1.4, 0.5], zoom: 2.1 },
   { name: 'Runnymede Theatre', fact: 'Opened in 1927, the Runnymede was Bloor West Village\'s grand old movie palace.', focus: [4.6, 1.8, -2.5], zoom: 1.9 },
   { name: 'CN Tower', fact: '553 metres of concrete. On a clear day you can see right across Lake Ontario.', focus: null },
-  { name: 'The neighbourhood', fact: 'High Park is just two stops away, bison and llamas included.', focus: [0.3, 1.0, 2.4], zoom: 1.5 },
+  { name: 'The neighbourhood', fact: 'High Park is just two stops away, bison included.', focus: [0.3, 1.0, 2.4], zoom: 1.5 },
   { name: 'Birthday surprise', fact: 'One last piece. It has your name on it.', focus: null },
 ];
 
@@ -566,7 +566,7 @@ def('crflag', 'Canada & Costa Rica flags', ['th3'], b => {
   }, top);
 });
 
-// ---------- West Toronto: Runnymede station, High Park zoo animals ----------
+// ---------- West Toronto: Runnymede station, High Park bison, a little Science World ----------
 def('subway', 'Jane station sign', ['sidewalkN'], b => {
   const x = -5.4, z = -1.15;
   b.box(x, 0.1, z, 0.16, 0.06, 0.16, K.pole);
@@ -590,20 +590,18 @@ def('bison', 'High Park bison', ['trees2'], b => {
   }
   b.boxC(x - 0.23, y + 0.24, z, 0.03, 0.14, 0.03, D, { rz: -0.35 });
 });
-def('llama', 'High Park llama', ['plaza'], b => {
-  const x = -6.45, z = 4.45, y = 0, W = '#f2e7d3', E = '#9a7550';
-  for (const lx of [-0.1, 0.1]) for (const lz of [-0.05, 0.05]) b.box(x + lx, y, z + lz, 0.05, 0.24, 0.05, W);
-  b.box(x, y + 0.22, z, 0.32, 0.16, 0.15, W);
-  b.box(x - 0.01, y + 0.33, z, 0.18, 0.04, 0.16, '#ff7aa8');
-  b.box(x - 0.01, y + 0.33, z, 0.06, 0.042, 0.162, '#19c3b4');
-  b.box(x + 0.13, y + 0.3, z, 0.08, 0.3, 0.08, W);
-  b.box(x + 0.16, y + 0.56, z, 0.14, 0.09, 0.09, W);
-  b.box(x + 0.24, y + 0.56, z, 0.05, 0.06, 0.06, E);
-  for (const s of [-1, 1]) {
-    b.box(x + 0.13, y + 0.64, z + s * 0.03, 0.025, 0.07, 0.02, E);
-    b.box(x + 0.2, y + 0.6, z + s * 0.047, 0.015, 0.02, 0.01, '#111111');
+def('scienceworld', 'Mini Science World', ['plaza'], b => {
+  const x = -6.45, z = 4.45;
+  b.cyl(x, 0, z, 0.56, 0.08, '#b9c0c6', { seg: 16 });
+  b.cyl(x, 0.08, z, 0.46, 0.12, '#7d868e', { seg: 16 });
+  b.cyl(x, 0.2, z, 0.16, 0.22, '#9aa3ab', { seg: 10, rt: 0.12 });
+  for (let i = 0; i < 3; i++) {
+    const a = i * PI * 2 / 3 + 0.4;
+    b.boxC(x + Math.cos(a) * 0.17, 0.33, z + Math.sin(a) * 0.17, 0.04, 0.26, 0.04, '#9aa3ab', { ry: -a, rz: 0.5 });
   }
-  b.boxC(x - 0.17, y + 0.33, z, 0.03, 0.08, 0.03, W, { rz: -0.5 });
+  b.add(new THREE.IcosahedronGeometry(0.42, 1), '#eef1f3', { x, y: 0.82, z, ch: 'cnled' });
+  b.cyl(x, 1.22, z, 0.018, 0.32, '#9aa3ab', { seg: 5 });
+  b.glow(x, 0.82, z, 1.8, '#9fd8ff');
 });
 
 def('boat', 'Sailboat', ['lake'], b => {
