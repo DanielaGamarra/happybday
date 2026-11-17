@@ -1,7 +1,7 @@
 // Little Toronto: every model is split into puzzle pieces like a laser-cut wooden kit.
 // Each piece lists the pieces it snaps onto (needs). Order below is the build order.
 import * as THREE from 'three';
-import { shape, roundRect, leafPts, cloudPts, blob, grow, edgeWindows } from './builder.js?v=20261115162237';
+import { shape, roundRect, leafPts, cloudPts, blob, grow, edgeWindows } from './builder.js?v=20261117153636';
 
 const PI = Math.PI;
 export const K = {
@@ -567,7 +567,7 @@ def('crflag', 'Canada & Costa Rica flags', ['th3'], b => {
 });
 
 // ---------- West Toronto: Runnymede station, High Park bison, a little Science World ----------
-def('subway', 'Jane station sign', ['sidewalkN'], b => {
+def('subway', 'Runnymede station sign', ['sidewalkN'], b => {
   const x = -5.4, z = -1.15;
   b.box(x, 0.1, z, 0.16, 0.06, 0.16, K.pole);
   b.cyl(x, 0.1, z, 0.035, 1.5, '#aab2ba', { seg: 6 });
