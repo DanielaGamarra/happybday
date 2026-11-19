@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#f3e4cf">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Little Toronto">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>Little Toronto</title>
+  <meta property="og:title" content="A gift is waiting for you">
+  <meta property="og:description" content="Daga made you a tiny Toronto. Tap to open it.">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="description" content="A little wooden puzzle.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-1 -1 2 2'%3E%3Cpath fill='%23d8352c' d='M0-1 .2-.6.42-.72.34-.28.72-.5.66-.3.95-.2.55.12.62.34.1.26.05.62.05.95-.05.95-.05.62-.1.26-.62.34-.55.12-.95-.2-.66-.3-.72-.5-.34-.28-.42-.72-.2-.6Z'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,900;1,9..144,600&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=20261118225822">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+    }
+  }
+  </script>
+  <script type="module" src="js/gate.js?v=20261118225822"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700;1,900&family=Special+Elite&family=Space+Mono:wght@400;700&family=Baloo+2:wght@600;800&family=Quicksand:wght@500;700&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Space+Grotesk:wght@500;700&family=Audiowide&family=Fredoka:wght@500;600;700&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/looks.css?v=20261118225822">
+</head>
+<body>
+  <script>document.body.classList.add("look-"+(new URLSearchParams(location.search).get("look")||"wood"))</script>
+  <div class="sparkles" aria-hidden="true"><i>✦</i><i>✧</i><i>✦</i><i>⋆</i><i>✦</i><i>✧</i><i>✦</i><i>⋆</i><i>✦</i><i>✧</i><i>✦</i><i>⋆</i><i>✦</i><i>✧</i></div>
+  <div class="backdrop"></div>
+  <canvas id="scene"></canvas>
+
+  <div id="loading" class="screen">
+    <div class="loader"><svg viewBox="-1 -1 2 2"><path d="M0-1 .2-.6.42-.72.34-.28.72-.5.66-.3.95-.2.55.12.62.34.1.26.05.62.05.95-.05.95-.05.62-.1.26-.62.34-.55.12-.95-.2-.66-.3-.72-.5-.34-.28-.42-.72-.2-.6Z"/></svg></div>
+    <p>Unpacking the box</p>
+  </div>
+
+  <header id="hud" hidden>
+    <div class="hud-main">
+      <div class="chap"><span id="chapNum">Chapter 1</span><b id="chapName">Opening the box</b></div>
+      <div class="bar"><i id="barFill"></i></div>
+    </div>
+    <div class="hud-btns">
+      <button id="btnHint" class="icon" aria-label="Show a hint">
+        <svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.6 10.8c.6.5 1 1.2 1.1 2V16h5v-.2c.1-.8.5-1.5 1.1-2A6 6 0 0 0 12 3Z"/></svg>
+      </button>
+      <button id="btnSound" class="icon" aria-label="Sound on or off">
+        <svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4Z"/><path class="wave" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/><path class="mute" d="M16 9l5 6M21 9l-5 6"/></svg>
+      </button>
+      <button id="btnParty" class="icon" aria-label="Birthday card" hidden>
+        <svg viewBox="0 0 24 24"><path d="M4 12h16v8H4zM3 8h18v4H3zM12 8v12M12 8c-2-4-6-3-5 0M12 8c2-4 6-3 5 0"/></svg>
+      </button>
+      <button id="btnMenu" class="icon" aria-label="Menu">
+        <svg viewBox="0 0 24 24"><path d="M5 7h14M5 12h14M5 17h14"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <section id="tray" hidden>
+    <div class="tray-head"><span>Wooden pieces</span><span id="count">0 / 49</span></div>
+    <div id="slots"></div>
+  </section>
+
+  <div id="toast" role="status"></div>
+  <div id="banner"></div>
+  <div id="eggCap" hidden><p id="eggText"></p><small>Tap to skip</small></div>
+  <div id="coach" hidden><p id="coachText"></p><button id="coachBtn" class="btn small" hidden>Got it</button></div>
+  <div id="hand" hidden><i class="ring"></i><i class="ring r2"></i><i class="dot"></i></div>
+
+  <div id="intro" class="screen" hidden>
+    <div class="card-box">
+      <div class="tv-tip">
+        <svg viewBox="0 0 24 24"><rect x="2.5" y="4.5" width="19" height="12.5" rx="2"/><path d="M8 20.5h8M12 17v3.5"/></svg>
+        <p><b>Even better on the TV!</b> Cast or mirror this screen to your TV and share the experience with everyone.</p>
+      </div>
+      <div class="box-lid">
+        <svg class="leaf" viewBox="-1 -1 2 2"><path d="M0-1 .2-.6.42-.72.34-.28.72-.5.66-.3.95-.2.55.12.62.34.1.26.05.62.05.95-.05.95-.05.62-.1.26-.62.34-.55.12-.95-.2-.66-.3-.72-.5-.34-.28-.42-.72-.2-.6Z"/></svg>
+        <h1>Little Toronto</h1>
+        <p class="sub">Something small, cut from wood and packed in a box, just for you. Open it and find out what it becomes.</p>
+      </div>
+      <p id="introMeta" class="meta"></p>
+      <button id="introGo" class="btn">Open the box</button>
+      <button id="introReset" class="link" hidden>Start from zero</button>
+    </div>
+  </div>
+
+  <div id="menu" class="sheet-wrap" hidden>
+    <div class="sheet">
+      <button id="menuRecenter" class="row">Recenter the view</button>
+      <button id="menuPhoto" class="row">Save a photo</button>
+      <button id="menuTutorial" class="row">Show the tutorial again</button>
+      <button id="menuReset" class="row danger">Build it again</button>
+      <button id="menuClose" class="btn small">Close</button>
+    </div>
+  </div>
+
+  <div id="ask" class="sheet-wrap" hidden>
+    <div class="sheet ask">
+      <p id="askText"></p>
+      <button id="askYes" class="btn">Yes, take it apart</button>
+      <button id="askNo" class="btn ghost">Keep my city</button>
+    </div>
+  </div>
+
+  <div id="finale" class="screen clear" hidden>
+    <div class="card-box party">
+      <small>You built the whole city</small>
+      <h1>Happy birthday, Priya!</h1>
+      <p class="sub">A little Toronto, one piece at a time. Here's to a year as warm as Bloor West at night.</p>
+      <p class="sign">Hope you like it!<br>Daniel</p>
+      <div class="eggs"><p>Did you find the Easter eggs?</p><button id="finEggs" class="btn small">Show me</button></div>
+      <div class="btns">
+        <button id="finPhoto" class="btn">Save a photo</button>
+        <button id="finLights" class="btn ghost">Lights on / off</button>
+      </div>
+      <button id="finClose" class="btn small ghost">Keep looking around</button>
+      <button id="finAgain" class="btn small ghost again">Build it again</button>
+    </div>
+  </div>
+
+</body>
+</html>
