@@ -21,7 +21,7 @@ export function decodeGift(s) {
   } catch { return null; }
 }
 const m = location.hash.match(/[#&]g=([A-Za-z0-9_-]+)/);
-const BAKED = {"v": 1, "c": "toronto", "l": "wood", "to": "Ale", "from": "Daga", "occ": "Merry Christmas", "p": [{"n": "Coco", "c": "#8a5a34", "s": "#5a3620"}, {"n": "Jero", "c": "#9a9894", "s": "#5c5a57"}], "t": {"marquee": "NOW SHOWING ★ ALE, COCO & JERO", "vehicle": "506 TO ALE’S"}}; // Ale's Christmas gift
+const BAKED = {"v": 1, "c": "toronto", "l": "wood", "f": "pe", "to": "Ale", "from": "Daga", "occ": "Merry Christmas", "p": [{"n": "Coco", "c": "#8a5a34", "s": "#5a3620"}, {"n": "Jero", "c": "#9a9894", "s": "#5c5a57"}], "t": {"marquee": "NOW SHOWING ★ ALE, COCO & JERO", "vehicle": "506 TO ALE’S"}}; // Ale's Christmas gift
 export const GIFT = (m && decodeGift(m[1])) || BAKED;
 
 // Words for the buttons this file adds, in the city's language (<html lang>)

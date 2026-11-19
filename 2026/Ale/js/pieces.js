@@ -583,6 +583,7 @@ def('salva', 'Daniel & baby Mira', ['sign'], b => {
   person(t, 0.55, 4.3, { legH: 0.33, torH: 0.3, wide: 0.26, skin: '#f2d2b6', hair: '#a87a4f', top: '#4f7a5a', bottom: '#3d4a63', push: true });
   stroller(t, 0.55, 4.3);
 });
+PIECES.splice(PIECES.findIndex(q => q.id === 'salva'), 1); // only Ale, Coco and Jero
 def('paula', (GIFT && GIFT.to && String(GIFT.to).slice(0, 24)) || 'Priya', ['beagle'], b => {
   const px = 1.6, pz = 4.3;
   person(turned(b, px, pz, PI / 2), px, pz, {

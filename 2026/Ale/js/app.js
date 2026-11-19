@@ -538,7 +538,7 @@ export async function startApp() {
     ui.finale.hidden = true; $('#btnParty').hidden = true; setFrustum();
     const tram = byId.tram6.group.position;
     const stops = [
-      { theta: 0.16 * PI, phi: 1.2, target: new V3(1.3, 0.42, 4.3), zoom: 7.5, text: `Daniel, baby Mira, ${TEXT.name} and ${PETS.length ? PETS.map(q => q.n).join(' & ') : 'Maple'} out for a walk` },
+      { theta: 0.16 * PI, phi: 1.2, target: new V3(1.3, 0.42, 4.3), zoom: 7.5, text: `${TEXT.name}, ${PETS.length ? PETS.map(q => q.n).join(' and ') : 'Maple'} out for a walk` },
       { theta: -0.12 * PI, phi: 1.3, target: new V3(4.6, 1.14, -1.28), zoom: 7, text: `At the Runnymede: ${TEXT.marquee.replace(/\s*\u2605\s*/, ': ')}` },
       { theta: 0.5 * PI, phi: 1.3, target: new V3(tram.x + 2.31, 1.4, 0.5), zoom: 9, text: `The bus to... ${TEXT.vehicle}` },
     ];
